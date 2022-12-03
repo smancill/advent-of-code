@@ -1,0 +1,31 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day01 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 1000
+    ... 2000
+    ... 3000
+    ... 
+    ... 4000
+    ... 
+    ... 5000
+    ... 6000
+    ... 
+    ... 7000
+    ... 8000
+    ... 9000
+    ... 
+    ... 10000
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    24000
+
+Part 2:
+
+    >>> part2(data)
+    45000
