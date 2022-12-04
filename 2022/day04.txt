@@ -1,0 +1,23 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day04 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 2-4,6-8
+    ... 2-3,4-5
+    ... 5-7,7-9
+    ... 2-8,3-7
+    ... 6-6,4-6
+    ... 2-6,4-8
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    2
+
+Part 2:
+
+    >>> part2(data)
+    4
