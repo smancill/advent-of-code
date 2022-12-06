@@ -1,174 +1,247 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
+import logging
+import logging.config
+from collections.abc import Sequence
+from dataclasses import dataclass
+from io import StringIO
 from itertools import count
+from typing import Final, Self, TextIO, TypeAlias
 
-verbose = False
+Position: TypeAlias = tuple[int, int]
+Move: TypeAlias = tuple[Position, Position]
 
-with open("input15.txt") as f:
-    data = [l.strip() for l in f]
+
+def read_data(f: TextIO) -> list[str]:
+    return [l.rstrip() for l in f]
 
 
 class Unit:
-    def __init__(self, side, pos, atk):
+    side: Final[str]
+    enemy: Final[str]
+    atk: Final[int]
+    _hp: int
+    _pos: Position
+
+    ELF: Final = "E"
+    GOBLIN: Final = "G"
+
+    def __init__(self, side: str, pos: Position, atk: int):
         self.side = side
-        self.pos = pos
+        self.enemy = Unit.GOBLIN if side == Unit.ELF else Unit.ELF
         self.atk = atk
-        self.hp = 200
-        self.enemy = 'G' if side == 'E' else 'E'
+        self._hp = 200
+        self._pos = pos
 
-    def is_alive(self):
-        return self.hp > 0
+    @property
+    def pos(self) -> Position:
+        return self._pos
 
-    def is_enemy(self, unit):
-        return self.side != unit.side
+    @property
+    def hp(self) -> int:
+        return self._hp
 
-    def __str__(self):
-        return f"{self.side}({self.hp})"
+    def move(self, pos: Position) -> None:
+        self._pos = pos
 
-    def __repr__(self):
-        return f"{self.side}[{self.pos}, {self.hp}, {self.atk}]"
+    def is_alive(self) -> bool:
+        return self._hp > 0
+
+    def attack(self, enemy: Self) -> None:
+        enemy._hp -= self.atk
+
+    def __str__(self) -> str:
+        return f"{self.side}({self._hp})"
 
 
-class Battle():
+@dataclass(frozen=True)
+class Status:
+    alive: int
+    killed: int
 
-    def __init__(self, data, elf_atk=3):
-        self.area = []
-        self.units = []
+
+@dataclass(frozen=True)
+class Winner:
+    side: str
+    atk: int
+    rounds: int
+    points: int
+    killed: int
+
+
+class Battle:
+    _area: Final[dict[Position, str]]
+    _units: Final[list[Unit]]
+    _killed: Final[dict[str, int]]
+
+    DEFAULT_ATK: Final = 3
+
+    WALL: Final = "#"
+    CAVERN: Final = "."
+
+    ENEMY: Final = {Unit.ELF: Unit.GOBLIN, Unit.GOBLIN: Unit.ELF}
+
+    def __init__(self, data: Sequence[str], elf_atk: int = DEFAULT_ATK):
+        self._area = {}
+        self._units = []
+        self._killed = {Unit.ELF: 0, Unit.GOBLIN: 0}
 
         for i, l in enumerate(data):
-            row = []
             for j, c in enumerate(l):
-                if c == 'E' or c == 'G':
-                    atk = elf_atk if c == 'E' else 3
-                    self.units.append(Unit(c, (i, j), atk))
-                row.append(c)
-            self.area.append(row)
+                p = (i, j)
+                if self._is_unit(c):
+                    atk = elf_atk if c == Unit.ELF else self.DEFAULT_ATK
+                    self._units.append(Unit(c, p, atk))
+                self._area[p] = c
 
-    def run(self, elves_win=False):
-        for k in count():
-            finished = False
-            for u in sorted(self.units, key=lambda u: u.pos):
-                if not u.is_alive():
+    def run(self) -> Winner:
+        def round() -> str | None:
+            for unit in sorted(self._units, key=lambda u: u.pos):
+                # Unit could have been killed by a previous attack in this round
+                if not unit.is_alive():
                     continue
-                e = self._enemies(u)
-                if not e:
-                    winner = u.side
-                    rounds = k
-                    finished = True
-                    break
-                self._move(u)
-                a = self._attack(u, e)
-                if elves_win and a and a.side == 'E' and not a.is_alive():
-                    return None
-            if verbose:
-                print(f"{self}")
-            if finished:
-                break
-
-        return winner, rounds, self._points(winner, rounds)
-
-    def _move(self, unit):
-        moves = self._bfs(unit)
-        if moves:
-            x, y = unit.pos
-            nx, ny = moves[0][2]
-            unit.pos = nx, ny
-            self.area[x][y] = '.'
-            self.area[nx][ny] = unit.side
-
-    def _attack(self, unit, enemies):
-        cand = self._in_range(*unit.pos)
-        enemies = [e for e in enemies if e.pos in cand]
-        if enemies:
-            selected = min(enemies, key=lambda e: (e.hp, e.pos))
-            selected.hp -= unit.atk
-            if not selected.is_alive():
-                x, y = selected.pos
-                self.area[x][y] = '.'
-            return selected
-        return None
-
-    def _bfs(self, unit):
-        if self._near_enemies(*unit.pos, unit.enemy):
+                # Side wins if there are no remaining enemies
+                enemies = self._enemies(unit)
+                if not enemies:
+                    return unit.side
+                # Optionally move before attacking
+                self._move(unit, enemies)
+                # Attack target in range, if any
+                self._attack(unit, enemies)
             return None
 
-        def adj_pos(x, y):
-            return [(i, j) for i, j in self._in_range(x, y)
-                    if self.area[i][j] == '.']
+        if debug := logging.getLogger().isEnabledFor(logging.DEBUG):
+            logging.debug("Initially:")
+            logging.debug(f"{self}")
+        for k in count(1):
+            winner = round()
+            if debug:
+                logging.debug(f"After {k} rounds:" if winner is None else "Last round:")
+                logging.debug(f"{self}")
+            if winner is not None:
+                return self._winner(winner, k - 1)
 
-        queue = [((i, j), (i, j)) for i, j in adj_pos(*unit.pos)]
-        visited = {unit.pos}
+        assert False
 
-        visit = True
-        dist = 1
+    def _move(self, unit: Unit, enemies: Sequence[Unit]) -> None:
+        if self._has_enemies_in_range(unit):
+            return
+        if moves := self._bfs(unit.pos, enemies):
+            _, start = moves[0]
+            self._area[unit.pos] = self.CAVERN
+            unit.move(start)
+            self._area[unit.pos] = unit.side
+
+    def _attack(self, unit: Unit, enemies: Sequence[Unit]) -> None:
+        if targets := self._enemies_in_range(unit, enemies):
+            selected = min(targets, key=lambda e: (e.hp, e.pos))
+            unit.attack(selected)
+            if not selected.is_alive():
+                self._area[selected.pos] = self.CAVERN
+                self._killed[selected.side] += 1
+
+    def _bfs(self, orig: Position, enemies: Sequence[Unit]) -> list[Move]:
+        def adj(pos: Position) -> list[Position]:
+            return [p for p in self._in_range(pos) if self._area[p] == self.CAVERN]
+
+        goals = {p for e in enemies for p in adj(e.pos)}
         moves = []
 
-        while visit and queue:
-            next_queue = []
+        # Start by moving to all adjacent positions, at distance 1
+        queue = [(p, p) for p in adj(orig)]
+        visited = {orig}
 
-            for pos in queue:
-                if pos in visited:
+        found = False
+        while queue:
+            next_queue: list[Move] = []
+            # Check all moves of distance d
+            for target, start in queue:
+                if target in visited:
                     continue
-                visited.add(pos)
-
-                x, y = pos[0]
-                if self._near_enemies(x, y, unit.enemy):
-                    moves.append((dist, pos[0], pos[1]))
-                    visit = False
+                visited.add(target)
+                # if there is an enemy in range, distance d is the minimal distance
+                if target in goals:
+                    moves.append((target, start))
+                    found = True
                     continue
-                next_queue += [((i, j), pos[1]) for i, j in adj_pos(x, y)]
-
+                # Add moves of distance d + 1
+                next_queue.extend((p, start) for p in adj(target))
+            if found:
+                break
+            # Replace moves of distance d with moves of distance d + 1
             queue = next_queue
-            dist += 1
 
+        # Return moves with minimal distance, sorted by end position
         return sorted(moves)
 
-    def _enemies(self, unit):
-        return [e for e in self.units if e.is_enemy(unit) and e.is_alive()]
+    def _winner(self, winner: str, rounds: int) -> Winner:
+        atk = next(u.atk for u in self._units if u.side == winner)
+        total_hp = sum(u.hp for u in self._units if u.side == winner and u.is_alive())
+        points = total_hp * rounds
+        return Winner(winner, atk, rounds, points, self._killed[winner])
 
-    def _near_enemies(self, x, y, e):
-        return any(self.area[i][j] == e for i, j in self._in_range(x, y))
+    def _enemies(self, unit: Unit) -> list[Unit]:
+        return [u for u in self._units if u.side == unit.enemy and u.is_alive()]
 
-    def _in_range(self, x, y):
-        return [(x-1, y), (x, y-1), (x, y+1), (x+1, y)]
+    def _enemies_in_range(self, unit: Unit, enemies: Sequence[Unit]) -> list[Unit]:
+        near_positions = self._in_range(unit.pos)
+        return [e for e in enemies if e.pos in near_positions]
 
-    def _points(self, winner, rounds):
-        return rounds * sum(u.hp for u in self.units
-                            if u.side == winner and u.is_alive())
+    def _has_enemies_in_range(self, unit: Unit) -> bool:
+        return any(self._area[pos] == unit.enemy for pos in self._in_range(unit.pos))
 
-    def __str__(self):
-        def get_units(i, r):
-            a = []
-            for j, c in enumerate(r):
-                if c == 'E' or c == 'G':
-                    u = next(u for u in self.units if u.pos == (i, j))
-                    a.append(f"{u}")
-            return ", ".join(a)
+    @staticmethod
+    def _in_range(pos: Position) -> tuple[Position, ...]:
+        y, x = pos
+        return ((y - 1, x), (y, x - 1), (y, x + 1), (y + 1, x))
 
-        output = ''
-        for i, r in enumerate(self.area):
-            row_output = ''.join(r)
-            row_units = get_units(i, r)
-            if row_units:
-                row_output += "  " + row_units
-            output += row_output + '\n'
-        return output
+    @staticmethod
+    def _is_unit(c: str) -> bool:
+        return c == Unit.ELF or c == Unit.GOBLIN
+
+    def __str__(self) -> str:
+        def find_unit(pos: Position) -> Unit:
+            return next(u for u in self._units if u.pos == pos and u.is_alive())
+
+        n, m = max(self._area)
+        buf = StringIO()
+        for i in range(n + 1):
+            row = [((p := (i, j)), self._area[p]) for j in range(m + 1)]
+            buf.write("".join(c for _, c in row))
+            if units := [find_unit(p) for p, c in row if self._is_unit(c)]:
+                buf.write("   ")
+                buf.write(", ".join(str(u) for u in units))
+            buf.write("\n")
+        return buf.getvalue()
 
 
-def part1():
+def part1(data: Sequence[str]) -> Winner:
     battle = Battle(data)
-    if verbose:
-        print(f"{battle}")
-    return battle.run()
+    result = battle.run()
+    if logging.getLogger().isEnabledFor(logging.INFO):
+        logging.info(f"{battle}")
+    return result
 
 
-def part2():
+def part2(data: Sequence[str]) -> Winner:
     for atk in count(4):
         battle = Battle(data, elf_atk=atk)
-        result = battle.run(elves_win=True)
-        if result:
+        result = battle.run()
+        if result.side == Unit.ELF and result.killed == 0:
+            if logging.getLogger().isEnabledFor(logging.INFO):
+                logging.info(f"{battle}")
             return result
+    assert False
 
 
-print(f"P1: {part1()[2]}")
-print(f"P2: {part2()[2]}")
+def main() -> None:
+    logging.config.fileConfig("../logging.conf")
+
+    data = read_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

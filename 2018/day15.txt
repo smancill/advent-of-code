@@ -1,0 +1,242 @@
+Setup:
+
+    >>> import logging
+    >>> import logging.config
+    >>> from io import StringIO
+
+    >>> from day15 import read_data, part1, part2
+
+    >>> logging.config.fileConfig("../logging.conf")
+    >>> logging.getLogger().setLevel(logging.INFO)
+
+Part 1:
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #.G...#
+    ... #...EG#
+    ... #.#.#G#
+    ... #..G#E#
+    ... #.....#
+    ... #######
+    ... """))
+    >>> part1(data)
+    #######
+    #G....#   G(200)
+    #.G...#   G(131)
+    #.#.#G#   G(59)
+    #...#.#
+    #....G#   G(200)
+    #######
+    <BLANKLINE>
+    Winner(side='G', atk=3, rounds=47, points=27730, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #G..#E#
+    ... #E#E.E#
+    ... #G.##.#
+    ... #...#E#
+    ... #...E.#
+    ... #######
+    ... """))
+    >>> part1(data)
+    #######
+    #...#E#   E(200)
+    #E#...#   E(197)
+    #.E##.#   E(185)
+    #E..#E#   E(200), E(200)
+    #.....#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=3, rounds=37, points=36334, killed=1)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #E..EG#
+    ... #.#G.E#
+    ... #E.##E#
+    ... #G..#.#
+    ... #..E#.#
+    ... #######
+    ... """))
+    >>> part1(data)
+    #######
+    #.E.E.#   E(164), E(197)
+    #.#E..#   E(200)
+    #E.##.#   E(98)
+    #.E.#.#   E(200)
+    #...#.#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=3, rounds=46, points=39514, killed=1)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #E.G#.#
+    ... #.#G..#
+    ... #G.#.G#
+    ... #G..#.#
+    ... #...E.#
+    ... #######
+    ... """))
+    >>> part1(data)
+    #######
+    #G.G#.#   G(200), G(98)
+    #.#G..#   G(200)
+    #..#..#
+    #...#G#   G(95)
+    #...G.#   G(200)
+    #######
+    <BLANKLINE>
+    Winner(side='G', atk=3, rounds=35, points=27755, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #.E...#
+    ... #.#..G#
+    ... #.###.#
+    ... #E#G#G#
+    ... #...#G#
+    ... #######
+    ... """))
+    >>> part1(data)
+    #######
+    #.....#
+    #.#G..#   G(200)
+    #.###.#
+    #.#.#.#
+    #G.G#G#   G(98), G(38), G(200)
+    #######
+    <BLANKLINE>
+    Winner(side='G', atk=3, rounds=54, points=28944, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #########
+    ... #G......#
+    ... #.E.#...#
+    ... #..##..G#
+    ... #...##..#
+    ... #...#...#
+    ... #.G...G.#
+    ... #.....G.#
+    ... #########
+    ... """))
+    >>> part1(data)
+    #########
+    #.G.....#   G(137)
+    #G.G#...#   G(200), G(200)
+    #.G##...#   G(200)
+    #...##..#
+    #.G.#...#   G(200)
+    #.......#
+    #.......#
+    #########
+    <BLANKLINE>
+    Winner(side='G', atk=3, rounds=20, points=18740, killed=0)
+
+Part 2:
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #.G...#
+    ... #...EG#
+    ... #.#.#G#
+    ... #..G#E#
+    ... #.....#
+    ... #######
+    ... """))
+    >>> part2(data)
+    #######
+    #..E..#   E(158)
+    #...E.#   E(14)
+    #.#.#.#
+    #...#.#
+    #.....#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=15, rounds=29, points=4988, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #E..EG#
+    ... #.#G.E#
+    ... #E.##E#
+    ... #G..#.#
+    ... #..E#.#
+    ... #######
+    ... """))
+    >>> part2(data)
+    #######
+    #.E.E.#   E(200), E(23)
+    #.#E..#   E(200)
+    #E.##E#   E(125), E(200)
+    #.E.#.#   E(200)
+    #...#.#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=4, rounds=33, points=31284, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #E.G#.#
+    ... #.#G..#
+    ... #G.#.G#
+    ... #G..#.#
+    ... #...E.#
+    ... #######
+    ... """))
+    >>> part2(data)
+    #######
+    #.E.#.#   E(8)
+    #.#E..#   E(86)
+    #..#..#
+    #...#.#
+    #.....#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=15, rounds=37, points=3478, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #######
+    ... #.E...#
+    ... #.#..G#
+    ... #.###.#
+    ... #E#G#G#
+    ... #...#G#
+    ... #######
+    ... """))
+    >>> part2(data)
+    #######
+    #...E.#   E(14)
+    #.#..E#   E(152)
+    #.###.#
+    #.#.#.#
+    #...#.#
+    #######
+    <BLANKLINE>
+    Winner(side='E', atk=12, rounds=39, points=6474, killed=0)
+
+    >>> data = read_data(StringIO("""\
+    ... #########
+    ... #G......#
+    ... #.E.#...#
+    ... #..##..G#
+    ... #...##..#
+    ... #...#...#
+    ... #.G...G.#
+    ... #.....G.#
+    ... #########
+    ... """))
+    >>> part2(data)
+    #########
+    #.......#
+    #.E.#...#   E(38)
+    #..##...#
+    #...##..#
+    #...#...#
+    #.......#
+    #.......#
+    #########
+    <BLANKLINE>
+    Winner(side='E', atk=34, rounds=30, points=1140, killed=0)

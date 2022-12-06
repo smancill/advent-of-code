@@ -1,0 +1,4 @@
+Setup:
+
+    >>> import sys
+    >>> print("No examples", file=sys.stderr)

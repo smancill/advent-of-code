@@ -1,0 +1,21 @@
+Setup:
+
+    >>> from day05 import parse_data, part1, part2
+
+Part 1:
+
+    >>> part1("aA")
+    0
+    >>> part1("abBA")
+    0
+    >>> part1("abAb")
+    4
+    >>> part1("aabAAB")
+    6
+    >>> part1("dabAcCaCBAcCcaDA")
+    10
+
+Part 2:
+
+    >>> part2("dabAcCaCBAcCcaDA")
+    4

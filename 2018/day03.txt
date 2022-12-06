@@ -1,0 +1,39 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day03 import parse_data, part1, part2
+
+    >>> claims, fabric = parse_data(StringIO("""\
+    ... #1 @ 1,3: 4x4
+    ... #2 @ 3,1: 4x4
+    ... #3 @ 5,5: 2x2
+    ... """))
+
+    >>> for y in range(8):
+    ...     for x in range(8):
+    ...         c = fabric.get((x, y), 0)
+    ...         if c == 0:
+    ...             print("_", end="")
+    ...         elif c == 1:
+    ...             print(next(c.id for c in claims if (x, y) in c.points()), end="")
+    ...         else:
+    ...             print("X", end="")
+    ...     print()
+    ________
+    ___2222_
+    ___2222_
+    _11XX22_
+    _11XX22_
+    _111133_
+    _111133_
+    ________
+
+Part 1:
+
+    >>> part1(claims, fabric)
+    4
+
+Part 2:
+
+    >>> part2(claims, fabric)
+    3

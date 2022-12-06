@@ -1,0 +1,60 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day06 import parse_data, calculate_dist, part1, part2
+
+    >>> coords = parse_data(StringIO("""\
+    ... 1, 1
+    ... 1, 6
+    ... 8, 3
+    ... 3, 4
+    ... 5, 5
+    ... 8, 9
+    ... """))
+    >>> B, N, T = calculate_dist(coords)
+
+    >>> C = {c: n for c, n in zip(coords, "ABCDEF")}
+    >>> for y in range(10):
+    ...     for x in range(10):
+    ...         print(f"{C.get((x, y), '_')}", end="")
+    ...     print()
+    __________
+    _A________
+    __________
+    ________C_
+    ___D______
+    _____E____
+    _B________
+    __________
+    __________
+    ________F_
+
+    >>> for y in range(10):
+    ...     for x in range(10):
+    ...         if (x, y) in C:
+    ...             print(f"{C[x, y]}", end="")
+    ...         elif (x, y) in N:
+    ...             print(f"{C[N[x, y]].lower()}", end="")
+    ...         else:
+    ...             print(f"_", end="")
+    ...     print()
+    aaaaa_cccc
+    aAaaa_cccc
+    aaaddecccc
+    aadddeccCc
+    __dDdeeccc
+    bb_deEeecc
+    bBb_eeee__
+    bbb_eeefff
+    bbb_eeffff
+    bbb_ffffFf
+
+Part 1:
+
+    >>> part1(B, N)
+    17
+
+Part 2:
+
+    >>> part2(T, 32)
+    16

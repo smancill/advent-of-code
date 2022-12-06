@@ -1,0 +1,32 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day12 import parse_data, part1, part2
+
+    >>> state, notes = parse_data(StringIO("""\
+    ... initial state: #..#.#..##......###...###
+    ... 
+    ... ...## => #
+    ... ..#.. => #
+    ... .#... => #
+    ... .#.#. => #
+    ... .#.## => #
+    ... .##.. => #
+    ... .#### => #
+    ... #.#.# => #
+    ... #.### => #
+    ... ##.#. => #
+    ... ##.## => #
+    ... ###.. => #
+    ... ###.# => #
+    ... ####. => #
+    ... """))
+
+Part 1:
+
+    >>> part1(state, notes)
+    325
+
+Part 2:
+
+    No example.

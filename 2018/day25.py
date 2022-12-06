@@ -1,42 +1,59 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import re
+from collections.abc import Sequence
+from typing import Final, TextIO, TypeAlias
 
-with open("input25.txt") as f:
-    points = [tuple(map(int, re.findall(r'-?\d+', l))) for l in f]
+Coord: TypeAlias = tuple[int, int, int, int]
+Constellation: TypeAlias = set[Coord]
+
+MAX_DIST: Final = 3
 
 
-def dist(a, b):
-    return (abs(a[0] - b[0]) + abs(a[1] - b[1]) +
-            abs(a[2] - b[2]) + abs(a[3] - b[3]))
+def parse_data(f: TextIO) -> list[Coord]:
+    def parse_coord(line: str) -> Coord:
+        x, y, z, t = map(int, re.findall(r"-?\d+", line))
+        return (x, y, z, t)
+
+    return [parse_coord(l) for l in f]
 
 
-def find_constelation(points, orig):
+def _dist(c1: Coord, c2: Coord) -> int:
+    return sum(abs(a1 - a2) for a1, a2 in zip(c1, c2))
+
+
+def find_constellation(orig: Coord, points: Sequence[Coord]) -> Constellation:
     group = set()
     queue = {orig}
     while queue:
         current = queue.pop()
-        if current in group:
-            continue
         group.add(current)
-        for p in points[:]:
-            if dist(current, p) <= 3:
-                queue.add(p)
-                points.remove(p)
+        near = [p for p in points if _dist(p, current) <= MAX_DIST and p not in group]
+        queue.update(near)
     return group
 
 
-def find_constelations(points):
+def find_constelations(points: Sequence[Coord]) -> list[Constellation]:
     constelations = []
     queue = set(points)
     while queue:
         orig = queue.pop()
-        const = find_constelation(points, orig)
+        const = find_constellation(orig, points)
         queue -= const
         constelations.append(const)
     return constelations
 
 
-constelations = find_constelations(points)
+def part1(points: Sequence[Coord]) -> int:
+    constelations = find_constelations(points)
+    return len(constelations)
 
-print(len(constelations))
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+
+
+if __name__ == "__main__":
+    main()

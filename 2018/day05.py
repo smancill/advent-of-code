@@ -1,13 +1,16 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
+import re
 from string import ascii_lowercase
-
-with open("input05.txt") as f:
-    data = f.read().strip()
+from typing import TextIO
 
 
-def react(polymer):
-    result = []
+def parse_data(f: TextIO) -> str:
+    return f.read().rstrip()
+
+
+def react(polymer: str) -> int:
+    result: list[str] = []
     for unit in polymer:
         if result:
             a = ord(unit)
@@ -19,11 +22,24 @@ def react(polymer):
     return len(result)
 
 
-def check_all():
-    for c in ascii_lowercase:
-        s = data.replace(c, '').replace(c.upper(), '')
-        yield react(s)
+def remove_units(polymer: str) -> list[str]:
+    return [re.sub(c, "", polymer, flags=re.I) for c in ascii_lowercase]
 
 
-print(f"P1: {react(data)}")
-print(f"P2: {min(check_all())}")
+def part1(polymer: str) -> int:
+    return react(polymer)
+
+
+def part2(polymer: str) -> int:
+    return min(react(p) for p in remove_units(polymer))
+
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,90 +1,127 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from collections import Counter
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from typing import Final, TextIO, TypeAlias
+
+Coord: TypeAlias = tuple[int, int]
+Tracks: TypeAlias = Mapping[Coord, str]
 
 
-with open("input13.txt") as f:
-    data = [l.rstrip() for l in f]
+cart_to_track: Final[Mapping[str, str]] = {
+    "<": "-",
+    ">": "-",
+    "v": "|",
+    "^": "|",
+}
 
-D = {'>': (0, 1), '<': (0, -1), 'v': (1, 0), '^': (-1, 0)}
+delta: Final[Mapping[str, Coord]] = {
+    ">": (1, 0),
+    "<": (-1, 0),
+    "v": (0, 1),
+    "^": (0, -1),
+}
 
-TS = {'>': '^', '^': '>', '<': 'v', 'v': '<'}
-TB = {'>': 'v', '^': '<', '<': '^', 'v': '>'}
-TI = {'>': '^>v', '<': 'v<^', 'v': '>v<', '^': '<^>'}
+turn_intersection: Final[Mapping[str, str]] = {
+    ">": "^>v",
+    "<": "v<^",
+    "v": ">v<",
+    "^": "<^>",
+}
+
+turn_curve: Final[Mapping[str, Mapping[str, str]]] = {
+    "/": {">": "^", "^": ">", "<": "v", "v": "<"},
+    "\\": {">": "v", "^": "<", "<": "^", "v": ">"},
+}
 
 
+@dataclass
 class Cart:
-    def __init__(self, pos, dir):
-        self.pos = pos
-        self.dir = dir
-        self.turn = 0
+    _position: Coord
+    _direction: str
+    _turn: int = 0
+
+    @property
+    def position(self) -> Coord:
+        return self._position
+
+    @property
+    def direction(self) -> str:
+        return self._direction
+
+    def advance(self) -> None:
+        cx, cy = self._position
+        dx, dy = delta[self._direction]
+        self._position = cx + dx, cy + dy
+
+    def take_intersection(self) -> None:
+        self._direction = turn_intersection[self._direction][self._turn]
+        self._turn = (self._turn + 1) % 3
+
+    def take_curve(self, curve: str) -> None:
+        self._direction = turn_curve[curve][self._direction]
 
 
-def parse(data):
-    tracks = []
+def read_data(f: TextIO) -> list[str]:
+    return [l.rstrip() for l in f]
+
+
+def parse_data(data: Sequence[str]) -> tuple[Tracks, list[Cart]]:
+    tracks = {}
     carts = []
-    for i in range(len(data)):
-        row = []
-        for j in range(len(data[i])):
-            c = data[i][j]
-            if c in '<>v^':
-                carts.append(Cart((i, j), c))
-                p = {'<': '-', '>': '-', 'v': '|', '^': '|'}
-                row.append(p[c])
+
+    for y in range(len(data)):
+        for x in range(len(data[y])):
+            c = data[y][x]
+            if c in cart_to_track:
+                carts.append(Cart((x, y), c))
+                tracks[x, y] = cart_to_track[c]
             else:
-                row.append(c)
-        tracks.append(row)
+                tracks[x, y] = c
+
     return tracks, carts
 
 
-def show(tracks):
-    for i in range(len(tracks)):
-        print(''.join(tracks[i]))
-
-
-def move(tracks, carts):
+def move_carts(tracks: Tracks, carts: Sequence[Cart]) -> None:
     for c in carts:
-        cy, cx = c.pos
-        dy, dx = D[c.dir]
-        ny, nx = cy + dy, cx + dx
-        np = tracks[ny][nx]
-
-        c.pos = ny, nx
-        if np == '+':
-            c.dir = TI[c.dir][c.turn]
-            c.turn = (c.turn + 1) % 3
-        elif np == '/':
-            c.dir = TS[c.dir]
-        elif np == '\\':
-            c.dir = TB[c.dir]
+        c.advance()
+        t = tracks[c.position]
+        if t == "+":
+            c.take_intersection()
+        elif t == "/" or t == "\\":
+            c.take_curve(t)
 
 
-def crashes(carts):
-    ct = Counter(c.pos for c in carts)
-    return [i[0] for i in ct.most_common() if i[1] > 1]
+def crashes(carts: Sequence[Cart]) -> list[Coord]:
+    ct = Counter(c.position for c in carts)
+    return [p for p, n in ct.most_common() if n > 1]
 
 
-def coords(point):
-    return f"{point[1]},{point[0]}"
-
-
-def part1():
-    tracks, carts = parse(data)
+def part1(data: Sequence[str]) -> Coord:
+    tracks, carts = parse_data(data)
     while True:
-        move(tracks, carts)
+        move_carts(tracks, carts)
         for p in crashes(carts):
-            return coords(p)
+            return p
 
 
-def part2():
-    tracks, carts = parse(data)
-    while carts:
-        move(tracks, carts)
+def part2(data: Sequence[str]) -> Coord:
+    tracks, carts = parse_data(data)
+    while True:
+        move_carts(tracks, carts)
         for p in crashes(carts):
-            carts = [c for c in carts if c.pos != p]
+            carts = [c for c in carts if c.position != p]
         if len(carts) == 1:
-            return coords(carts[0].pos)
+            return carts[0].position
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def main() -> None:
+    data = read_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

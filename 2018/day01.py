@@ -1,14 +1,33 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
+from collections.abc import Sequence
 from itertools import accumulate, cycle
+from typing import TextIO
 
-data = [int(l) for l in open("input01.txt")]
 
-print(f"P1: {sum(data)}")
+def parse_data(f: TextIO) -> list[int]:
+    return [int(l) for l in f]
 
-freqs = {0}
-for f in accumulate(cycle(data)):
-    if f in freqs:
-        print(f"P2: {f}")
-        break
-    freqs.add(f)
+
+def part1(changes: Sequence[int]) -> int:
+    return sum(changes)
+
+
+def part2(changes: Sequence[int]) -> int:
+    freqs = {0}
+    for f in accumulate(cycle(changes)):
+        if f in freqs:
+            return f
+        freqs.add(f)
+    assert False
+
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

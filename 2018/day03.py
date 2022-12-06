@@ -1,38 +1,58 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import re
+from collections import Counter
+from collections.abc import Iterator, Mapping, Sequence
+from dataclasses import dataclass
+from typing import TextIO, TypeAlias
 
-from collections import defaultdict, namedtuple
-
-Claim = namedtuple('Claim', ['id', 'x', 'y', 'w', 'h'])
-
-with open("input03.txt") as f:
-    claims = [Claim(*map(int, re.findall(r'-?\d+', l))) for l in f]
-
-
-def map_claims(claims):
-    fabric = defaultdict(int)
-    for c in claims:
-        for i in range(c.w):
-            for j in range(c.h):
-                fabric[c.x+i, c.y+j] += 1
-    return fabric
+Point: TypeAlias = tuple[int, int]
+Fabric: TypeAlias = Mapping[Point, int]
 
 
-def unique_claim(fabric, claim):
-    for i in range(claim.w):
-        for j in range(claim.h):
-            if fabric[claim.x+i, claim.y+j] > 1:
-                return False
-    return True
+@dataclass(frozen=True)
+class Claim:
+    id: int
+    x: int
+    y: int
+    w: int
+    h: int
+
+    def points(self) -> Iterator[Point]:
+        return ((self.x + j, self.y + i) for i in range(self.h) for j in range(self.w))
 
 
-fabric = map_claims(claims)
+def parse_data(f: TextIO) -> tuple[list[Claim], Fabric]:
+    def parse_claim(line: str) -> Claim:
+        values = re.findall(r"-?\d+", line)
+        return Claim(*map(int, values))
 
-total = sum(1 for v in fabric.values() if v > 1)
-print(f"P1: {total}")
+    def map_claims(claims: Sequence[Claim]) -> Fabric:
+        return Counter(p for c in claims for p in c.points())
 
-for c in claims:
-    if unique_claim(fabric, c):
-        print(f"P2: {c.id}")
-        break
+    claims = [parse_claim(l) for l in f]
+    fabric = map_claims(claims)
+    return claims, fabric
+
+
+def unique_claim(fabric: Fabric, claim: Claim) -> bool:
+    return all(fabric[p] < 2 for p in claim.points())
+
+
+def part1(_: Sequence[Claim], fabric: Fabric) -> int:
+    return sum(1 for v in fabric.values() if v > 1)
+
+
+def part2(claims: Sequence[Claim], fabric: Fabric) -> int:
+    return next(c.id for c in claims if unique_claim(fabric, c))
+
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(*data)}")
+    print(f"P2: {part2(*data)}")
+
+
+if __name__ == "__main__":
+    main()

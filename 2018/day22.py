@@ -1,117 +1,223 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-from heapq import heappush, heappop
+from collections.abc import Mapping, Set
+from enum import IntEnum
+from heapq import heappop, heappush
+from io import StringIO
+from typing import Final, NamedTuple, TextIO, TypeAlias
 
-with open("input22.txt") as f:
+Coord: TypeAlias = tuple[int, int]
+
+
+class RegionType(IntEnum):
+    ROCKY = 0
+    WET = 1
+    NARROW = 2
+
+
+class Tool(IntEnum):
+    TORCH = 0
+    GEAR = 1
+    NEITHER = 2
+
+
+tools_for_region: Final[Mapping[RegionType, Set[Tool]]] = {
+    RegionType.ROCKY: {Tool.GEAR, Tool.TORCH},
+    RegionType.WET: {Tool.GEAR, Tool.NEITHER},
+    RegionType.NARROW: {Tool.TORCH, Tool.NEITHER},
+}
+
+regions_for_tool: Final[Mapping[Tool, Set[RegionType]]] = {
+    Tool.TORCH: {RegionType.ROCKY, RegionType.NARROW},
+    Tool.GEAR: {RegionType.ROCKY, RegionType.WET},
+    Tool.NEITHER: {RegionType.WET, RegionType.NARROW},
+}
+
+
+def parse_data(f: TextIO) -> tuple[int, Coord]:
     data = [l.split()[-1] for l in f]
     depth = int(data[0])
-    target = tuple(map(int, data[1].split(',')))
-
-ROCKY, WET, NARROW = 0, 1, 2
-TORCH, GEAR, NEITHER = 0, 1, 2
+    tx, ty = map(int, data[1].split(","))
+    return depth, (tx, ty)
 
 
 class Region:
-    def __init__(self, geo_idx, depth):
-        self.ero_level = (geo_idx + depth) % 20183
-        self.risk_level = self.ero_level % 3
+    erosion: Final[int]
+    type: Final[RegionType]
+
+    def __init__(self, geo_index: int, depth: int):
+        self.erosion = (geo_index + depth) % 20183
+        self.type = RegionType(self.erosion % 3)
+
+    @property
+    def risk(self) -> int:
+        return self.type
+
+    def __str__(self) -> str:
+        match self.type:
+            case RegionType.ROCKY:
+                return "."
+            case RegionType.WET:
+                return "="
+            case RegionType.NARROW:
+                return "|"
 
 
-def map_cave(depth, target):
-    tx, ty = target
-    mx, my = tx + 200, ty + 200  # may need adjustment if input changes
+class Cave:
+    RegionMap: TypeAlias = list[list[Region]]
 
-    cave = [[None] * mx for _ in range(my)]
+    _data: Final[RegionMap]
+    _target: Final[Coord]
 
-    for i in range(1, my):
-        gi = i * 48271
-        cave[i][0] = Region(gi, depth)
+    def __init__(self, depth: int, target: Coord, *, extend: int = 200):
+        # 'extend' value chosen after trial and error for input data
+        width, height = target[0] + extend, target[1] + extend
 
-    for j in range(1, mx):
-        gi = j * 16807
-        cave[0][j] = Region(gi, depth)
+        self._data = Cave._init_regions((width, height, depth), target)
+        self._target = target
 
-    for i in range(1, my):
-        for j in range(1, mx):
-            gi = cave[i-1][j].ero_level * cave[i][j-1].ero_level
-            cave[i][j] = Region(gi, depth)
+    @staticmethod
+    def _init_regions(dimensions: tuple[int, int, int], target: Coord) -> RegionMap:
+        width, height, depth = dimensions
+        placeholder = Region(0, 0)
 
-    cave[0][0] = Region(0, depth)
-    cave[ty][tx] = Region(0, depth)
+        regions = [[placeholder] * width for _ in range(height)]
 
-    return cave
+        # Init top-left corner
+        regions[0][0] = Region(0, depth)
+
+        # Init top row
+        for x in range(1, width):
+            geo_index = x * 16807
+            regions[0][x] = Region(geo_index, depth)
+
+        # Init left column
+        for y in range(1, height):
+            geo_index = y * 48271
+            regions[y][0] = Region(geo_index, depth)
+
+        # Init rest of regions, including target
+        for y in range(1, height):
+            for x in range(1, width):
+                if (x, y) == target:
+                    regions[y][x] = Region(0, depth)
+                    continue
+                left, top = regions[y][x - 1], regions[y - 1][x]
+                geo_index = left.erosion * top.erosion
+                regions[y][x] = Region(geo_index, depth)
+
+        return regions
+
+    @property
+    def target(self) -> Coord:
+        return self._target
+
+    @property
+    def mouth(self) -> Coord:
+        return (0, 0)
+
+    @property
+    def width(self) -> int:
+        return len(self._data[0])
+
+    @property
+    def height(self) -> int:
+        return len(self._data)
+
+    @property
+    def risk(self) -> int:
+        return sum(
+            self[x, y].risk
+            for y in range(0, self.target[1] + 1)
+            for x in range(0, self.target[0] + 1)
+        )
+
+    def __getitem__(self, pos: Coord) -> Region:
+        return self._data[pos[1]][pos[0]]
+
+    def __str__(self) -> str:
+        buf = StringIO()
+        for y in range(self.height):
+            for x in range(self.width):
+                match (x, y):
+                    case (0, 0):
+                        buf.write("M")
+                    case self.target:
+                        buf.write("T")
+                    case _:
+                        buf.write(str(self._data[y][x]))
+            buf.write("\n")
+        return buf.getvalue()
 
 
-def show(cave, target):
-    regions = {ROCKY: '.', WET: '=', NARROW: '|'}
-
-    tx, ty = target
-    for i in range(0, ty + 1):
-        for j in range(0, tx + 1):
-            if (i, j) == (0, 0):
-                print('M', end='')
-            elif (i, j) == (ty, tx):
-                print('T', end='')
-            else:
-                print(regions[cave[i][j].risk_level], end='')
-        print()
+def _dist(c1: Coord, c2: Coord) -> int:
+    return abs(c1[0] - c2[0]) + abs(c1[1] - c2[1])
 
 
-def risk_level(cave, target):
-    return sum(cave[i][j].risk_level
-               for i in range(0, target[1] + 1)
-               for j in range(0, target[0] + 1))
+def _reachable_regions(cave: Cave, pos: Coord, tool: Tool) -> list[Coord]:
+    px, py = pos
+    return [
+        (x, y)
+        for x, y in ((px, py - 1), (px, py + 1), (px - 1, py), (px + 1, py))
+        if (x >= 0 and y >= 0) and cave[x, y].type in regions_for_tool[tool]
+    ]
 
 
-def rescue(cave, target):
-    tools = {
-        ROCKY: (GEAR, TORCH),
-        WET: (GEAR, NEITHER),
-        NARROW: (TORCH, NEITHER)
-    }
-    regions = {
-        TORCH: (ROCKY, NARROW),
-        GEAR: (ROCKY, WET),
-        NEITHER: (WET, NARROW)
-    }
+def _switch_tools(cave: Cave, pos: Coord, tool: Tool) -> list[Tool]:
+    return [t for t in tools_for_region[cave[pos].type] if t != tool]
 
-    def dist(y, x):
-        return abs(ty - y) + abs(tx - x)
 
-    tx, ty = target
-    queue = [(0, 0, 0, 0, TORCH)]  # (heuristic, time, y, x, tool)
-    visited = dict()
+def rescue(cave: Cave) -> int:
+    class Move(NamedTuple):
+        heuristic: int
+        time: int
+        position: Coord
+        tool: Tool
 
+    queue: list[Move] = []
+    visited: dict[tuple[Coord, Tool], int] = dict()
+
+    heappush(queue, Move(0, 0, cave.mouth, Tool.TORCH))
     while queue:
-        _, time, y, x, tool = heappop(queue)
-        best = y, x, tool
+        _, time, pos, tool = heappop(queue)
 
-        if best == (ty, tx, TORCH):
+        current = pos, tool
+        if current == (cave.target, Tool.TORCH):
             return time
-
-        if best in visited and visited[best] <= time:
+        if current in visited and visited[current] <= time:
             continue
-
-        visited[best] = time
+        visited[current] = time
 
         # Try reachable regions
-        for i, j in [(y-1, x), (y+1, x), (y, x-1), (y, x+1)]:
-            if i < 0 or j < 0:
-                continue
-            if cave[i][j].risk_level in regions[tool]:
-                cost = time + 1
-                heur = cost + dist(i, j)
-                heappush(queue, (heur, cost, i, j, tool))
+        for p in _reachable_regions(cave, pos, tool):
+            cost = time + 1
+            heur = cost + _dist(cave.target, p)
+            heappush(queue, Move(heur, cost, p, tool))
 
         # Try switching tool
-        for t in tools[cave[y][x].risk_level]:
-            if t != tool:
-                cost = time + 7
-                heur = cost + dist(y, x)
-                heappush(queue, (heur, cost, y, x, t))
+        for t in _switch_tools(cave, pos, tool):
+            cost = time + 7
+            heur = cost + _dist(cave.target, pos)
+            heappush(queue, Move(heur, cost, pos, t))
+
+    assert False
 
 
-cave = map_cave(depth, target)
+def part1(cave: Cave) -> int:
+    return cave.risk
 
-print(f"P1: {risk_level(cave, target)}")
-print(f"P2: {rescue(cave, target)}")
+
+def part2(cave: Cave) -> int:
+    return rescue(cave)
+
+
+def main() -> None:
+    data = parse_data(open(0))
+    cave = Cave(*data)
+
+    print(f"P1: {part1(cave)}")
+    print(f"P2: {part2(cave)}")
+
+
+if __name__ == "__main__":
+    main()

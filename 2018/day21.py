@@ -1,56 +1,70 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-with open("input21.txt") as f:
-    data = f.readlines()
+from collections.abc import Callable, Sequence
+from typing import Final, TextIO, TypeAlias
+
+N: Final = 6
+
+Registers: TypeAlias = list[int]
+Instruction: TypeAlias = tuple[str, int, int, int]
+
+OpCodeFn: TypeAlias = Callable[[Registers, int, int, int], None]
 
 
-def wrap(op):
-    def fn(regs, a, b, c):
+def _wrap(op: Callable[[Registers, int, int], int]) -> OpCodeFn:
+    def fn(regs: Registers, a: int, b: int, c: int) -> None:
         regs[c] = op(regs, a, b)
+
     return fn
 
 
-ops = {
-    'addr': wrap(lambda r, a, b: r[a] + r[b]),
-    'addi': wrap(lambda r, a, b: r[a] + b),
-    'mulr': wrap(lambda r, a, b: r[a] * r[b]),
-    'muli': wrap(lambda r, a, b: r[a] * b),
-    'banr': wrap(lambda r, a, b: r[a] & r[b]),
-    'bani': wrap(lambda r, a, b: r[a] & b),
-    'borr': wrap(lambda r, a, b: r[a] | r[b]),
-    'bori': wrap(lambda r, a, b: r[a] | b),
-    'setr': wrap(lambda r, a, b: r[a]),
-    'seti': wrap(lambda r, a, b: a),
-    'gtir': wrap(lambda r, a, b: 1 if a > r[b] else 0),
-    'gtri': wrap(lambda r, a, b: 1 if r[a] > b else 0),
-    'gtrr': wrap(lambda r, a, b: 1 if r[a] > r[b] else 0),
-    'eqir': wrap(lambda r, a, b: 1 if a == r[b] else 0),
-    'eqri': wrap(lambda r, a, b: 1 if r[a] == b else 0),
-    'eqrr': wrap(lambda r, a, b: 1 if r[a] == r[b] else 0),
+opcodes_fn: dict[str, OpCodeFn] = {
+    "addr": _wrap(lambda r, a, b: r[a] + r[b]),
+    "addi": _wrap(lambda r, a, b: r[a] + b),
+    "mulr": _wrap(lambda r, a, b: r[a] * r[b]),
+    "muli": _wrap(lambda r, a, b: r[a] * b),
+    "banr": _wrap(lambda r, a, b: r[a] & r[b]),
+    "bani": _wrap(lambda r, a, b: r[a] & b),
+    "borr": _wrap(lambda r, a, b: r[a] | r[b]),
+    "bori": _wrap(lambda r, a, b: r[a] | b),
+    "setr": _wrap(lambda r, a, b: r[a]),
+    "seti": _wrap(lambda r, a, b: a),
+    "gtir": _wrap(lambda r, a, b: 1 if a > r[b] else 0),
+    "gtri": _wrap(lambda r, a, b: 1 if r[a] > b else 0),
+    "gtrr": _wrap(lambda r, a, b: 1 if r[a] > r[b] else 0),
+    "eqir": _wrap(lambda r, a, b: 1 if a == r[b] else 0),
+    "eqri": _wrap(lambda r, a, b: 1 if r[a] == b else 0),
+    "eqrr": _wrap(lambda r, a, b: 1 if r[a] == r[b] else 0),
 }
 
 
-def read_program():
-    ip = int(data[0].split()[-1])
+def read_data(f: TextIO) -> list[str]:
+    return f.readlines()
 
-    ins = []
-    for l in data[1:]:
-        t = l.split()
-        i = [t[0]] + list(map(int, t[1:]))
-        ins.append(i)
+
+def read_program(data: Sequence[str]) -> tuple[int, list[Instruction]]:
+    def parse_instruction(line: str) -> Instruction:
+        op, *args = line.split()
+        a, b, c = map(int, args)
+        return (op, a, b, c)
+
+    ip = int(data[0].split()[-1])
+    ins = [parse_instruction(l) for l in data[1:]]
 
     return ip, ins
 
 
-def run(part1=True):
-    regs = [0] * 6
-    ip, prog = read_program()
+def execute_program(data: Sequence[str], part1: bool = True) -> int:
+    ip, prog = read_program(data)
+
+    # Initial value of registers
+    regs = [0] * N
 
     # get important registers
     main, opt = prog[5][-1], prog[26][-1]
 
     seen = set()
-    prev = None
+    prev = 0
 
     while 0 <= regs[ip] < len(prog):
         # intersect instruction for halt condition
@@ -69,11 +83,21 @@ def run(part1=True):
             regs[ip] = 7
         # execute instruction normally
         else:
-            ins = prog[regs[ip]]
-            ops[ins[0]](regs, *ins[1:])
+            op, a, b, c = prog[regs[ip]]
+            fn = opcodes_fn[op]
+            fn(regs, a, b, c)
 
         regs[ip] += 1
 
+    assert False
 
-print(f"P1: {run(part1=True)}")
-print(f"P2: {run(part1=False)}")
+
+def main() -> None:
+    data = read_data(open(0))
+
+    print(f"P1: {execute_program(data, part1=True)}")
+    print(f"P2: {execute_program(data, part1=False)}")
+
+
+if __name__ == "__main__":
+    main()

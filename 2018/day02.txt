@@ -1,0 +1,32 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day02 import parse_data, part1, part2
+
+Part 1:
+
+    >>> data = parse_data(StringIO("""\
+    ... abcdef
+    ... bababc
+    ... abbcde
+    ... abcccd
+    ... aabcdd
+    ... abcdee
+    ... ababab
+    ... """))
+    >>> part1(data)
+    12
+
+Part 2:
+
+    >>> data = parse_data(StringIO("""\
+    ... abcde
+    ... fghij
+    ... klmno
+    ... pqrst
+    ... fguij
+    ... axcye
+    ... wvxyz
+    ... """))
+    >>> part2(data)
+    'fgij'
