@@ -1,0 +1,9 @@
+[tool.mypy]
+strict = true
+local_partial_types = true
+warn_unused_ignores = true
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportUnboundVariable = "warning"
+reportUnusedVariable = "warning"
