@@ -2,41 +2,51 @@
 
 import math
 import re
+from collections.abc import Mapping, Sequence
+from typing import TextIO, TypeAlias
 
-with open("input16.txt") as f:
-    fields, ticket, nearby = f.read().split('\n\n')
-
-    def parse_field(line):
-        tokens = re.match(r'(.+): (\d+)-(\d+) or (\d+)-(\d+)', line).groups()
-        return tokens[0], tuple(map(int, tokens[1:]))
-
-    def read_ticket(ticket):
-        return list(map(int, ticket.split(',')))
-
-    fields = {n: r for n, r in (parse_field(l) for l in fields.splitlines())}
-    ticket = read_ticket(ticket.splitlines()[1])
-    nearby = [read_ticket(l) for l in nearby.splitlines()[1:]]
+Range: TypeAlias = tuple[int, int]
+Fields: TypeAlias = Mapping[str, Sequence[Range]]
+Ticket: TypeAlias = Sequence[int]
 
 
-def in_range(r, v):
-    return r[0] <= v <= r[1] or r[2] <= v <= r[3]
+def parse_data(f: TextIO) -> tuple[Fields, Ticket, list[Ticket]]:
+    def parse_field(line: str) -> tuple[str, list[Range]]:
+        if match := re.match(r"(.+): (\d+)-(\d+) or (\d+)-(\d+)", line):
+            name, *limits = match.groups()
+            a, b, c, d = map(int, limits)
+            return name, [(a, b), (c, d)]
+        raise ValueError(line)
+
+    def parse_ticket(line: str) -> Ticket:
+        return list(map(int, line.split(",")))
+
+    sections = [s.splitlines() for s in f.read().split("\n\n")]
+
+    fields = dict(parse_field(l) for l in sections[0])
+    ticket = parse_ticket(sections[1][1])
+    nearby = [parse_ticket(l) for l in sections[2][1:]]
+
+    return fields, ticket, nearby
 
 
-def is_valid_value(v):
-    return any(in_range(r, v) for r in fields.values())
+def _is_in_range(r: Sequence[Range], v: int) -> bool:
+    return any(a <= v <= b for a, b in r)
 
 
-def part1():
-    return sum(v for t in nearby for v in t if not is_valid_value(v))
+def _is_valid_value(fields: Fields, v: int) -> bool:
+    return any(_is_in_range(r, v) for r in fields.values())
 
 
-def part2():
+def find_fields(
+    fields: Fields, ticket: Ticket, nearby: Sequence[Ticket]
+) -> dict[int, str]:
     # filter valid tickets
-    valid = [t for t in nearby if all(is_valid_value(v) for v in t)]
+    valid = [t for t in nearby if all(_is_valid_value(fields, v) for v in t)]
 
     # collect the fields that match the values in every position
     candidates = {
-        i: {f for f, r in fields.items() if all(in_range(r, t[i]) for t in valid)}
+        i: {f for f, r in fields.items() if all(_is_in_range(r, t[i]) for t in valid)}
         for i in range(len(ticket))
     }
 
@@ -52,9 +62,26 @@ def part2():
         for j in candidates:
             candidates[j].discard(names[i])
 
-    return math.prod(v for i, v in enumerate(ticket)
-                     if names[i].startswith('departure'))
+    return names
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def part1(fields: Fields, _: Ticket, nearby: Sequence[Ticket]) -> int:
+    return sum(v for t in nearby for v in t if not _is_valid_value(fields, v))
+
+
+def part2(fields: Fields, ticket: Ticket, nearby: Sequence[Ticket]) -> int:
+    names = find_fields(fields, ticket, nearby)
+    return math.prod(
+        v for i, v in enumerate(ticket) if names[i].startswith("departure")
+    )
+
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(*data)}")
+    print(f"P2: {part2(*data)}")
+
+
+if __name__ == "__main__":
+    main()

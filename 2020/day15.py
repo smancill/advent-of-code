@@ -1,16 +1,35 @@
 #!/usr/bin/env python
 
-with open("input15.txt") as f:
-    data = [int(i) for i in f.read().split(',')]
+from collections.abc import Sequence
+from typing import TextIO
 
 
-def find_number(turns):
-    prev = {n: i + 1 for i, n in enumerate(data)}
-    last = data[-1]
-    for i in range(len(data), turns):
-        prev[last], last = i, i - prev[last] if last in prev else 0
+def parse_data(f: TextIO) -> list[int]:
+    return [int(i) for i in f.read().split(",")]
+
+
+def find_number(starting: Sequence[int], turns: int) -> int:
+    prev = {n: i + 1 for i, n in enumerate(starting)}
+    last = starting[-1]
+    for i in range(len(starting), turns):
+        prev[last], last = i, (i - prev[last] if last in prev else 0)
     return last
 
 
-print(f"P1: {find_number(2020)}")
-print(f"P2: {find_number(30000000)}")
+def part1(data: Sequence[int]) -> int:
+    return find_number(data, 2020)
+
+
+def part2(data: Sequence[int]) -> int:
+    return find_number(data, 30_000_000)
+
+
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

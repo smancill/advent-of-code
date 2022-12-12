@@ -1,46 +1,59 @@
 #!/usr/bin/env python
 
-ORDER = {'(': 30, '*': 20, '+': 20}
+from collections.abc import Callable, Mapping, Sequence
+from typing import Final, TextIO, TypeAlias
 
-OP = {
-    '+': lambda a, b: a + b,
-    '*': lambda a, b: a * b,
+Order: TypeAlias = Mapping[str, int]
+Operator: TypeAlias = Callable[[int, int], int]
+
+
+operator_order_1: Final[Order] = {"(": 30, "*": 20, "+": 20}
+operator_order_2: Final[Order] = {"(": 30, "*": 10, "+": 20}
+
+operator_fn: Final[Mapping[str, Operator]] = {
+    "+": lambda a, b: a + b,
+    "*": lambda a, b: a * b,
 }
 
-with open("input18.txt") as f:
-    data = [e.replace('(', ' ( ').replace(')', ' ) ').split()
-            for e in f.readlines()]
+
+def read_data(f: TextIO) -> list[str]:
+    return f.readlines()
 
 
-def eval_rpn(rpn):
-    s = []
+def eval_rpn(rpn: str) -> int:
+    stack = []
     for c in rpn:
         if c.isnumeric():
-            s.append(int(c))
+            stack.append(int(c))
         else:
-            b, a = s.pop(), s.pop()
-            s.append(OP[c](a, b))
-    return s.pop()
+            b, a = stack.pop(), stack.pop()
+            fn = operator_fn[c]
+            stack.append(fn(a, b))
+    return stack.pop()
+
+
+def tokenize(expr: str) -> list[str]:
+    return expr.replace("(", " ( ").replace(")", " ) ").split()
 
 
 # See <https://en.wikipedia.org/wiki/Shunting-yard_algorithm>
-def to_rpn(exp, order=ORDER):
+def to_rpn(expr: str, order: Order) -> str:
     rpn = ""
-    ops = []
+    ops: list[str] = []
 
-    for c in exp:
-        if c.isnumeric():
-            rpn += c
-        elif c in order:
-            while ops and order[ops[-1]] > order[c] and ops[-1] != '(':
+    for token in tokenize(expr):
+        if token.isnumeric():
+            rpn += token
+        elif token in order:
+            while ops and order[token] <= order[ops[-1]] and ops[-1] != "(":
                 rpn += ops.pop()
-            ops.append(c)
-        elif c == '(':
-            ops.append(c)
-        elif c == ')':
-            while ops and ops[-1] != '(':
+            ops.append(token)
+        elif token == "(":
+            ops.append(token)
+        elif token == ")":
+            while ops and ops[-1] != "(":
                 rpn += ops.pop()
-            if ops[-1] == '(':
+            if ops[-1] == "(":
                 ops.pop()
 
     while ops:
@@ -49,14 +62,20 @@ def to_rpn(exp, order=ORDER):
     return rpn
 
 
-def part1():
-    return sum(eval_rpn(to_rpn(exp)) for exp in data)
+def part1(data: Sequence[str]) -> int:
+    return sum(eval_rpn(to_rpn(expr, operator_order_1)) for expr in data)
 
 
-def part2():
-    order = ORDER | {'*': 10}
-    return sum(eval_rpn(to_rpn(exp, order)) for exp in data)
+def part2(data: Sequence[str]) -> int:
+    return sum(eval_rpn(to_rpn(expr, operator_order_2)) for expr in data)
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def main() -> None:
+    data = read_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

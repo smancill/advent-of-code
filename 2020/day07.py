@@ -1,19 +1,31 @@
 #!/usr/bin/env python
 
 import re
+from collections.abc import Sequence
+from typing import Final, Mapping, TextIO, TypeAlias
 
-with open("input07.txt") as f:
-    rules = {
-        re.match(r"\w+ \w+", r)[0]:
-        [(int(q), b) for q, b in re.findall(r"(\d+) (\w+ \w+)", r)]
-        for r in f
-    }
+Quantity: TypeAlias = tuple[int, str]
+Rules: TypeAlias = Mapping[str, Sequence[Quantity]]
 
-BAG = "shiny gold"
+BAG: Final = "shiny gold"
 
 
-def part1():
-    def contains(bag, target):
+def parse_data(f: TextIO) -> Rules:
+    def parse_bag(rule: str) -> str:
+        if match := re.match(r"\w+ \w+", rule):
+            return match[0]
+        raise ValueError(rule)
+
+    def parse_content(rule: str) -> list[Quantity]:
+        matches = re.findall(r"(\d+) (\w+ \w+)", rule)
+        return [(int(q), b) for q, b in matches]
+
+    return {parse_bag(r): parse_content(r) for r in f}
+
+
+def part1(rules: Rules) -> int:
+    # Solve without recursion
+    def contains(bag: str, target: str) -> bool:
         visited = set()
         queue = set(b for _, b in rules[bag])
         while queue:
@@ -29,8 +41,9 @@ def part1():
     return sum(1 for bag in rules if contains(bag, BAG))
 
 
-def part2():
-    def count_content(bag):
+def part2(rules: Rules) -> int:
+    # Solve without recursion
+    def count_content(bag: str) -> int:
         counter = {}
         stack = [bag]
         while stack:
@@ -47,5 +60,12 @@ def part2():
     return count_content(BAG)
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

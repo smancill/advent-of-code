@@ -1,0 +1,26 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day14 import read_data, part1, part2
+
+Part 1:
+
+    >>> data = read_data(StringIO("""\
+    ... mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+    ... mem[8] = 11
+    ... mem[7] = 101
+    ... mem[8] = 0
+    ... """))
+    >>> part1(data)
+    165
+
+Part 2:
+
+    >>> data = read_data(StringIO("""\
+    ... mask = 000000000000000000000000000000X1001X
+    ... mem[42] = 100
+    ... mask = 00000000000000000000000000000000X0XX
+    ... mem[26] = 1
+    ... """))
+    >>> part2(data)
+    208

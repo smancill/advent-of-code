@@ -1,0 +1,26 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day08 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... nop +0
+    ... acc +1
+    ... jmp +4
+    ... acc +3
+    ... jmp -3
+    ... acc -99
+    ... acc +1
+    ... jmp -4
+    ... acc +6
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    5
+
+Part 2:
+
+    >>> part2(data)
+    8

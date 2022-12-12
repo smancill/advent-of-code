@@ -1,0 +1,176 @@
+Setup:
+
+    >>> import logging
+    >>> import logging.config
+
+    >>> from io import StringIO
+    >>> from day11 import read_data, part1, part2
+
+    >>> logging.config.fileConfig("../logging.conf")
+    >>> logging.getLogger().setLevel(logging.INFO)
+
+    >>> data = read_data(StringIO("""\
+    ... L.LL.LL.LL
+    ... LLLLLLL.LL
+    ... L.L.L..L..
+    ... LLLL.LL.LL
+    ... L.LL.LL.LL
+    ... L.LLLLL.LL
+    ... ..L.L.....
+    ... LLLLLLLLLL
+    ... L.LLLLLL.L
+    ... L.LLLLL.LL
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    L.LL.LL.LL
+    LLLLLLL.LL
+    L.L.L..L..
+    LLLL.LL.LL
+    L.LL.LL.LL
+    L.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLLL
+    L.LLLLLL.L
+    L.LLLLL.LL
+    <BLANKLINE>
+    #.##.##.##
+    #######.##
+    #.#.#..#..
+    ####.##.##
+    #.##.##.##
+    #.#####.##
+    ..#.#.....
+    ##########
+    #.######.#
+    #.#####.##
+    <BLANKLINE>
+    #.LL.L#.##
+    #LLLLLL.L#
+    L.L.L..L..
+    #LLL.LL.L#
+    #.LL.LL.LL
+    #.LLLL#.##
+    ..L.L.....
+    #LLLLLLLL#
+    #.LLLLLL.L
+    #.#LLLL.##
+    <BLANKLINE>
+    #.##.L#.##
+    #L###LL.L#
+    L.#.#..#..
+    #L##.##.L#
+    #.##.LL.LL
+    #.###L#.##
+    ..#.#.....
+    #L######L#
+    #.LL###L.L
+    #.#L###.##
+    <BLANKLINE>
+    #.#L.L#.##
+    #LLL#LL.L#
+    L.L.L..#..
+    #LLL.##.L#
+    #.LL.LL.LL
+    #.LL#L#.##
+    ..L.L.....
+    #L#LLLL#L#
+    #.LLLLLL.L
+    #.#L#L#.##
+    <BLANKLINE>
+    #.#L.L#.##
+    #LLL#LL.L#
+    L.#.L..#..
+    #L##.##.L#
+    #.#L.LL.LL
+    #.#L#L#.##
+    ..L.L.....
+    #L#L##L#L#
+    #.LLLLLL.L
+    #.#L#L#.##
+    <BLANKLINE>
+    37
+
+Part 2:
+
+    >>> part2(data)
+    L.LL.LL.LL
+    LLLLLLL.LL
+    L.L.L..L..
+    LLLL.LL.LL
+    L.LL.LL.LL
+    L.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLLL
+    L.LLLLLL.L
+    L.LLLLL.LL
+    <BLANKLINE>
+    #.##.##.##
+    #######.##
+    #.#.#..#..
+    ####.##.##
+    #.##.##.##
+    #.#####.##
+    ..#.#.....
+    ##########
+    #.######.#
+    #.#####.##
+    <BLANKLINE>
+    #.LL.LL.L#
+    #LLLLLL.LL
+    L.L.L..L..
+    LLLL.LL.LL
+    L.LL.LL.LL
+    L.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLL#
+    #.LLLLLL.L
+    #.LLLLL.L#
+    <BLANKLINE>
+    #.L#.##.L#
+    #L#####.LL
+    L.#.#..#..
+    ##L#.##.##
+    #.##.#L.##
+    #.#####.#L
+    ..#.#.....
+    LLL####LL#
+    #.L#####.L
+    #.L####.L#
+    <BLANKLINE>
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##LL.LL.L#
+    L.LL.LL.L#
+    #.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+    <BLANKLINE>
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##L#.#L.L#
+    L.L#.#L.L#
+    #.L####.LL
+    ..#.#.....
+    LLL###LLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+    <BLANKLINE>
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##L#.#L.L#
+    L.L#.LL.L#
+    #.LLLL#.LL
+    ..#.L.....
+    LLL###LLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+    <BLANKLINE>
+    26

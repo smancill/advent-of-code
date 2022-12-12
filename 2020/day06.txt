@@ -1,0 +1,32 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day06 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... abc
+    ... 
+    ... a
+    ... b
+    ... c
+    ... 
+    ... ab
+    ... ac
+    ... 
+    ... a
+    ... a
+    ... a
+    ... a
+    ... 
+    ... b
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    11
+
+Part 2:
+
+    >>> part2(data)
+    6

@@ -1,0 +1,20 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day17 import read_data, part1, part2
+
+    >>> data = read_data(StringIO("""\
+    ... .#.
+    ... ..#
+    ... ###
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    112
+
+Part 2:
+
+    >> part2(data)
+    848

@@ -1,37 +1,63 @@
 #!/usr/bin/env python
 
 import re
+from collections.abc import Sequence
+from typing import TextIO, TypeAlias
 
-with open("input21.txt") as f:
-    foods = [re.fullmatch(r'(.*) \(contains (.*)\)\n', l).groups() for l in f]
-    foods = [(set(i.split()), set(a.split(', '))) for i, a in foods]
+Ingredients: TypeAlias = set[str]
+Allergens: TypeAlias = set[str]
+Food: TypeAlias = tuple[Ingredients, Allergens]
 
 
-def find_allergic_ingredients(foods):
-    reduced = {}
-    cand = [(a, set.intersection(*(fi for fi, fa in foods if a in fa)))
-            for a in sorted(set.union(*(fa for _, fa in foods)))]
+def parse_data(f: TextIO) -> list[Food]:
+    def parse_food(line: str) -> Food:
+        if match := re.fullmatch(r"(.*) \(contains (.*)\)\n", line):
+            ingredients, allergens = match.groups()
+            return set(ingredients.split()), set(allergens.split(", "))
+        raise ValueError(line)
 
-    while cand:
-        a, s = cand.pop(0)
-        if len(s) == 1:
-            i = next(iter(s))
-            reduced[i] = a
+    return [parse_food(l) for l in f]
+
+
+def find_allergic_ingredients(foods: Sequence[Food]) -> dict[str, str]:
+    def known_allergens() -> Allergens:
+        return set.union(*(fa for _, fa in foods))
+
+    def may_contain_allergen(allergen: str) -> Ingredients:
+        return set.intersection(*(fi for fi, fa in foods if allergen in fa))
+
+    allergic = {}
+    candidates = [(a, may_contain_allergen(a)) for a in known_allergens()]
+
+    while candidates:
+        allergen, ingredients = candidates.pop(0)
+        if len(ingredients) == 1:
+            ingredient = ingredients.pop()
+            allergic[ingredient] = allergen
         else:
-            s -= set(reduced)
-            cand.append((a, s))
+            ingredients -= set(allergic)
+            candidates.append((allergen, ingredients))
 
-    return dict(sorted(reduced.items(), key=lambda t: t[1]))
+    return dict(sorted(allergic.items(), key=lambda t: t[1]))
 
 
-def part1():
+def part1(foods: Sequence[Food]) -> int:
     allergic = set(find_allergic_ingredients(foods))
     return sum(len(ingredients - allergic) for ingredients, _ in foods)
 
 
-def part2():
-    return ','.join(find_allergic_ingredients(foods))
+def part2(foods: Sequence[Food]) -> str:
+    allergic = find_allergic_ingredients(foods)
+    allergic = dict(sorted(allergic.items(), key=lambda t: t[1]))
+    return ",".join(allergic)
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()

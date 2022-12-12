@@ -1,18 +1,26 @@
 #!/usr/bin/env python
 
-# Boarding passes are actually binary numbers,
-# described in a fancy way
-to_binary = str.maketrans('FBLR', '0101')
-
-with open("input05.txt") as f:
-    seats = [int(bp.strip().translate(to_binary), 2) for bp in f]
+from collections.abc import Sequence
+from typing import TextIO
 
 
-def part1():
+def parse_data(f: TextIO) -> list[int]:
+    # Boarding passes are actually binary numbers,
+    # described in a fancy way
+    to_binary = str.maketrans('FBLR', '0101')
+
+    def parse_pass(line: str) -> int:
+        bp = line.strip().translate(to_binary)
+        return int(bp, 2)
+
+    return [parse_pass(l) for l in f]
+
+
+def part1(seats: Sequence[int]) -> int:
     return max(seats)
 
 
-def part2():
+def part2(seats: Sequence[int]) -> int:
     # All seats are occupied sequentially except one somewhere in between,
     # so the sum of all the numbers in the expected sequence
     # minus the sum of all the scanned numbers
@@ -21,5 +29,12 @@ def part2():
     return sum(all_seats) - sum(seats)
 
 
-print(f"P1: {part1()}")
-print(f"P2: {part2()}")
+def main() -> None:
+    data = parse_data(open(0))
+
+    print(f"P1: {part1(data)}")
+    print(f"P2: {part2(data)}")
+
+
+if __name__ == "__main__":
+    main()
