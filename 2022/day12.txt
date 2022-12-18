@@ -1,0 +1,22 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day12 import parse_data, part1, part2
+
+    >>> M, S, T = parse_data(StringIO("""\
+    ... Sabqponm
+    ... abcryxxl
+    ... accszExk
+    ... acctuvwj
+    ... abdefghi
+    ... """))
+
+Part 1:
+
+    >>> part1(M, S, T)
+    31
+
+Part 2:
+
+    >>> part2(M, S, T)
+    29
