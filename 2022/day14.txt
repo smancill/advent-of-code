@@ -1,0 +1,64 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day14 import Cave, parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 498,4 -> 498,6 -> 496,6
+    ... 503,4 -> 502,4 -> 502,9 -> 494,9
+    ... """))
+
+    >>> def show(cave):
+    ...     print(str(cave).replace(".", "_"))
+
+    >>> cave = Cave(data)
+    >>> show(cave)
+    _______+____
+    ____________
+    ____________
+    ____________
+    _____#___##_
+    _____#___#__
+    ___###___#__
+    _________#__
+    _________#__
+    _#########__
+
+Part 1:
+
+    >>> cave.fill()
+    >>> show(cave)
+    _______+____
+    ____________
+    _______o____
+    ______ooo___
+    _____#ooo##_
+    ____o#ooo#__
+    ___###ooo#__
+    _____oooo#__
+    __o_ooooo#__
+    _#########__
+
+    >>> part1(data)
+    24
+
+Part 2:
+
+    >>> cave = Cave(data, floor_delta=2)
+    >>> cave.fill()
+    >>> show(cave)
+    ____________o____________
+    ___________ooo___________
+    __________ooooo__________
+    _________ooooooo_________
+    ________oo#ooo##o________
+    _______ooo#ooo#ooo_______
+    ______oo###ooo#oooo______
+    _____oooo_oooo#ooooo_____
+    ____oooooooooo#oooooo____
+    ___ooo#########ooooooo___
+    __ooooo_______ooooooooo__
+    #########################
+
+    >> part2(data)
+    93
