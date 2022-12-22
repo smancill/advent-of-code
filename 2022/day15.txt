@@ -1,0 +1,73 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day15 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... Sensor at x=2, y=18: closest beacon is at x=-2, y=15
+    ... Sensor at x=9, y=16: closest beacon is at x=10, y=16
+    ... Sensor at x=13, y=2: closest beacon is at x=15, y=3
+    ... Sensor at x=12, y=14: closest beacon is at x=10, y=16
+    ... Sensor at x=10, y=20: closest beacon is at x=10, y=16
+    ... Sensor at x=14, y=17: closest beacon is at x=10, y=16
+    ... Sensor at x=8, y=7: closest beacon is at x=2, y=10
+    ... Sensor at x=2, y=0: closest beacon is at x=2, y=10
+    ... Sensor at x=0, y=11: closest beacon is at x=2, y=10
+    ... Sensor at x=20, y=14: closest beacon is at x=25, y=17
+    ... Sensor at x=17, y=20: closest beacon is at x=21, y=22
+    ... Sensor at x=16, y=7: closest beacon is at x=15, y=3
+    ... Sensor at x=14, y=3: closest beacon is at x=15, y=3
+    ... Sensor at x=20, y=1: closest beacon is at x=15, y=3
+    ... """))
+
+    Show example:
+
+    >>> W, H = range(-2, 26), range(-2, 23)
+    >>> A = {(x, y): "_" for y in H for x in W}
+    >>> (x0, y0), L = (8, 7), 9
+    >>> for y in range(y0 - L, y0 + L + 1):
+    ...     dx = L - abs(y0 - y)
+    ...     for x in range(x0 - dx, x0 + dx + 1):
+    ...         A[x, y] = "#"
+    >>> for s in data:
+    ...     A[s.position.x, s.position.y] = "S"
+    ...     A[s.beacon.x, s.beacon.y] = "B"
+    >>> for y in H:
+    ...     for x in W:
+    ...         print(A[x, y], end="")
+    ...     print()
+    __________#_________________
+    _________###________________
+    ____S___#####_______________
+    _______#######________S_____
+    ______#########S____________
+    _____###########SB__________
+    ____#############___________
+    ___###############__________
+    __#################_________
+    _#########S#######S#________
+    __#################_________
+    ___###############__________
+    ____B############___________
+    __S__###########____________
+    ______#########_____________
+    _______#######______________
+    ________#####_S_______S_____
+    B________###________________
+    __________#SB_______________
+    ________________S__________B
+    ____S_______________________
+    ____________________________
+    ____________S______S________
+    ____________________________
+    _______________________B____
+
+Part 1:
+
+    >>> part1(data, target=10)
+    26
+
+Part 2:
+
+    >>> part2(data, limit=20)
+    56000011
