@@ -1,0 +1,26 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day22 import parse_data, part1
+
+    >>> grid, moves = parse_data(StringIO("""\
+    ...         ...#
+    ...         .#..
+    ...         #...
+    ...         ....
+    ... ...#.......#
+    ... ........#...
+    ... ..#....#....
+    ... ..........#.
+    ...         ...#....
+    ...         .....#..
+    ...         .#......
+    ...         ......#.
+    ... 
+    ... 10R5L5R10L4R5L5
+    ... """))
+
+Part 1:
+
+    >>> part1(grid, moves)
+    6032
