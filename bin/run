@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+
+opt_check_stdin() {
+    if [[ ! -t 0 ]]; then
+        echo -e "\033[0;33mwarning: $1 is ignored when reading from stdin\033[0m" >&2
+    fi
+}
+
+
+source "$(dirname "$0")/day"
+
+year=$(get_year)
+day=$(get_default_day "${year}")
+
+alternative=""
+input=input
+verbose=false
+
+while test $# -gt 0; do
+    arg=$1
+    case "${arg}" in
+        -s)
+            opt_check_stdin "-s"
+            input=sample
+            ;;
+        -t)
+            opt_check_stdin "-t"
+            input=day
+            ;;
+        -a)
+            shift
+            alternative=$1
+            ;;
+        -v)
+            verbose=true
+            ;;
+        *)
+            day=$(get_user_day "${arg}")
+            ;;
+    esac
+    shift
+done
+
+if [[ -z ${day} ]]; then
+    echoerr "missing day"
+    exit 1
+fi
+
+script=day${day}${alternative}.py
+if [[ ! -f ${script} ]]; then
+    echoerr "day ${day#0}${alternative} not solved yet"
+    exit 1
+fi
+
+
+run_day() {
+    echo -e "\033[0;32mpython ${script} < ${input}\033[0m"
+    exec python "${script}" < "${input}"
+}
+
+
+run_day_from_pipe() {
+    echo -e "\033[0;32mpython ${script}\033[0m"
+    exec python "${script}"
+}
+
+
+run_tests() {
+    pyargs=(-m doctest -f)
+    pyargs+=(-o REPORT_UDIFF)
+    if [[ ${verbose} == true ]]; then
+        pyargs+=(-v)
+    fi
+    echo -e "\033[0;32mpython ${pyargs[*]} ${input}\033[0m"
+    exec python "${pyargs[@]}" "${input}"
+}
+
+
+if [[ -t 0 ]]; then
+    input=${input}${day}.txt
+    if [[ ! -f ${input} ]]; then
+        echoerr "missing ${input} file"
+        exit 1
+    fi
+    if [[ ${input} =~ ^day[0-9][0-9]\.txt ]]; then
+        run_tests
+    else
+        run_day
+    fi
+else
+    run_day_from_pipe
+fi

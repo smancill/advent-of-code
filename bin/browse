@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/day"
+
+year=$(get_year)
+day=$(get_day "${year}" "$@")
+
+url="https://adventofcode.com/${year}/day/${day#0}"
+
+cmd=()
+case "$(uname -s)" in
+    Linux*)
+        cmd+=(xdg-open)
+        ;;
+    Darwin*)
+        cmd+=(open)
+        ;;
+    *)
+        echoerr "unknown system"
+        exit 1
+        ;;
+esac
+cmd+=("${url}")
+
+echo "${url}"
+exec "${cmd[@]}"

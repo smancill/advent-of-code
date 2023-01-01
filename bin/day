@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+set -eu
+
+echoerr() {
+    echo "error: $*" >&2
+}
+
+
+check_aoc_cookie() {
+    if [[ -z ${AOC_SESSION_COOKIE:+1} ]]; then
+        echoerr "AOC_SESSION_COOKIE environment variable is not set"
+        return 1
+    fi
+}
+
+
+check_command() {
+    if ! command -v "$1" > /dev/null; then
+        echoerr "missing $1 command"
+        return 1
+    fi
+}
+
+
+get_year() {
+    local year
+    year=$(basename "$(pwd)")
+    if ! [[ ${year} =~ ^20[1-9][0-9]$ ]]; then
+        echoerr "not in an AoC year directory"
+        return 1
+    fi
+    echo "${year}"
+}
+
+
+get_default_day() {
+    local day
+    local year=$1
+    if [[ $(date +%Y-%m) == "${year}-12" ]]; then
+        day=$(date +%d)
+        if [[ ${day} -le 25 ]]; then
+            normalize_day "${day}"
+        fi
+    fi
+}
+
+
+get_user_day() {
+    case $1 in
+        [1-9]|0[1-9]|1[0-9]|2[0-5])
+            normalize_day "$1"
+            ;;
+        *)
+            echoerr "invalid day: $1"
+            return 1
+            ;;
+    esac
+}
+
+
+get_day() {
+    local year=$1
+    local day
+    shift
+    if [[ $# -eq 0 ]]; then
+        day=$(get_default_day "${year}")
+        if [[ -z ${day} ]]; then
+            echoerr "missing day argument"
+            return 1
+        fi
+    else
+        day=$(get_user_day "$1") || return $?
+    fi
+    echo "${day}"
+}
+
+
+normalize_day() {
+    printf "%02d" "$(( "10#$1" ))"
+}
+
+
+# If not sourced
+if ! (return 0 2>/dev/null); then
+    set -eu
+
+    check_aoc_cookie
+
+    year=$(get_year)
+    day=$(get_day "${year}" "$@")
+
+    source_file=day${day}.py
+    example_file=day${day}.txt
+    problem_file=day${day}.adoc
+    user_input=input${day}.txt
+
+    if [[ ! -f ${user_input} ]]; then
+        echo "Downloading input..."
+        user_input_url=https://adventofcode.com/${year}/day/${day#0}/input
+        curl "${user_input_url}" -H "cookie: session=${AOC_SESSION_COOKIE}" -o "${user_input}" 2>/dev/null
+    fi
+
+    day_files=()
+    day_files+=("${source_file}")
+    day_files+=("${example_file}")
+    day_files+=("${user_input}")
+    if [[ -f ${problem_file} ]]; then
+        day_files+=("${problem_file}")
+    fi
+
+    export AOC_YEAR=${year}
+    export AOC_DAY=${day}
+    echo "${day_files[@]}"
+    exec vim -O2 "${day_files[@]}"
+fi
