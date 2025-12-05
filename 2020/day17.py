@@ -19,7 +19,7 @@ def _parse_active(slice: Sequence[str], ndim: int) -> set[Coord]:
 
 
 def _shift_coord(coord: Coord, delta: Coord) -> Coord:
-    return tuple(i + j for i, j in zip(coord, delta))
+    return tuple(i + j for i, j in zip(coord, delta, strict=True))
 
 
 def simulate(slice: Sequence[str], *, ndim: int, cycles: int = 6) -> int:

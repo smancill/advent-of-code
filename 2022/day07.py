@@ -35,8 +35,7 @@ def parse_data(f: TextIO) -> Directory:
                     raise ValueError(f"$ cd .. ({current=})")
                 if current.parent is not None:
                     return current.parent
-                else:
-                    raise ValueError(f"$ cd .. ({current=})")
+                raise ValueError(f"$ cd .. ({current=})")
             case _:
                 for node in current.children:
                     if isinstance(node, Directory) and node.name == target:

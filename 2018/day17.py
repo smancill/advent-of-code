@@ -140,7 +140,7 @@ class WaterMap(Map2D):
                 self[j, y] = FLOW
                 if self[j, y + 1] == SAND:
                     return j
-            assert False  # Must reach a clay wall, or a border to flow down
+            raise ValueError  # Must reach a clay wall, or a border to flow down
 
         return Limits(flow(x - 1, -1), flow(x + 1, 1))
 
@@ -151,7 +151,7 @@ class WaterMap(Map2D):
         for j in xrange:
             if self[j, y - 1] == FLOW:
                 return Coord(j, y - 1)
-        assert False  # Must reach a source of water
+        raise ValueError  # Must reach a source of water
 
     def _overflow(self, xlim: Limits, y: int) -> list[Coord]:
         return [Coord(x, y) for x in [xlim.low, xlim.high] if self[x, y + 1] == SAND]

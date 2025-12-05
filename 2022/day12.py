@@ -41,25 +41,25 @@ class HeightMap:
 
 def parse_data(f: TextIO) -> tuple[HeightMap, Coord, Coord]:
     def find_location(t: str) -> Coord:
-        w, h = len(M[0]), len(M)
-        return next((x, y) for x, y in _coords(w, h) if M[y][x] == t)
+        w, h = len(data[0]), len(data)
+        return next((x, y) for x, y in _coords(w, h) if data[y][x] == t)
 
-    M = [[c for c in l.rstrip()] for l in f]
+    data = [list(l.rstrip()) for l in f]
 
     sx, sy = find_location("S")
-    M[sy][sx] = "a"
+    data[sy][sx] = "a"
 
     tx, ty = find_location("E")
-    M[ty][tx] = "z"
+    data[ty][tx] = "z"
 
-    return HeightMap(M), (sx, sy), (tx, ty)
+    return HeightMap(data), (sx, sy), (tx, ty)
 
 
 def _coords(width: int, height: int) -> Iterator[Coord]:
     return ((x, y) for y in range(height) for x in range(width))
 
 
-def min_distance(heightmap: HeightMap, start: Sequence[Coord], target: Coord) -> int:
+def min_distance(heights: HeightMap, start: Sequence[Coord], target: Coord) -> int:
     visited = {}
     queue = [(0, c) for c in start]
     heapq.heapify(queue)
@@ -75,20 +75,20 @@ def min_distance(heightmap: HeightMap, start: Sequence[Coord], target: Coord) ->
             continue
         visited[current] = dist
 
-        for coord in heightmap.reachable(current):
+        for coord in heights.reachable(current):
             heapq.heappush(queue, (dist + 1, coord))
 
     return visited[target]
 
 
-def part1(map: HeightMap, current: Coord, target: Coord) -> int:
+def part1(heights: HeightMap, current: Coord, target: Coord) -> int:
     start = [current]
-    return min_distance(map, start, target)
+    return min_distance(heights, start, target)
 
 
-def part2(map: HeightMap, _: Coord, target: Coord) -> int:
-    start = [c for c in _coords(map.width, map.height) if map[c] == "a"]
-    return min_distance(map, start, target)
+def part2(heights: HeightMap, _: Coord, target: Coord) -> int:
+    start = [c for c in _coords(heights.width, heights.height) if heights[c] == "a"]
+    return min_distance(heights, start, target)
 
 
 def main() -> None:

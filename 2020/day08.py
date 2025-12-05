@@ -31,7 +31,7 @@ def run(prog: Sequence[Instruction]) -> tuple[int, int]:
             case "nop":
                 ip += 1
             case _:
-                assert False
+                raise AssertionError
 
         if ip == n:
             break
@@ -60,8 +60,7 @@ def part2(prog: Sequence[Instruction]) -> int:
         if ip == n:
             return acc
         prog[i] = (op, arg)
-
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

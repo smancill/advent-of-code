@@ -2,6 +2,7 @@
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
+from types import MappingProxyType
 from typing import Final, TextIO, TypeAlias
 
 
@@ -16,12 +17,14 @@ Operator: TypeAlias = Callable[[int, int], int]
 Action: TypeAlias = int | Operation
 
 
-operators: Final[Mapping[str, Operator]] = {
-    "+": lambda a, b: a + b,
-    "-": lambda a, b: a - b,
-    "*": lambda a, b: a * b,
-    "/": lambda a, b: a // b,
-}
+operators: Final = MappingProxyType(
+    {
+        "+": lambda a, b: a + b,
+        "-": lambda a, b: a - b,
+        "*": lambda a, b: a * b,
+        "/": lambda a, b: a // b,
+    }
+)
 
 
 def parse_data(f: TextIO) -> dict[str, Action]:
@@ -82,13 +85,17 @@ def part2(data: Mapping[str, Action]) -> int:
         tree["humn"] = x
         return evaluator.eval()
 
-    tree = dict(data) | {"root": replace(data["root"], op="=")}
+    root = data["root"]
+    assert isinstance(root, Operation)
+
+    tree = dict(data) | {"root": replace(root, op="=")}
     evaluator = Evaluator(tree, operators | {"=": cmp})
 
     # Find search boundaries.
     target = 1
     result = eval(target)
     lower = result
+
     # Eval until the cmp() result changes
     while result == lower:
         target *= 10

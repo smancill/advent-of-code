@@ -24,7 +24,7 @@ def count_trees(data: Sequence[str], delta: tuple[int, int]) -> int:
     # assuming it will exactly end at the last row
     iy = range(0, len(data), dy)
     ix = itertools.count(0, dx)
-    return sum(1 for y, x in zip(iy, ix) if data[y][x % w] == "#")
+    return sum(1 for y, x in zip(iy, ix, strict=False) if data[y][x % w] == "#")
 
 
 def part1(data: Sequence[str]) -> int:

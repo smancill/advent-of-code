@@ -2,21 +2,33 @@
 
 import re
 from collections.abc import Sequence
-from dataclasses import dataclass
 from itertools import count
 from typing import Final, TextIO
 
 
-@dataclass
 class Point:
-    x: int
-    y: int
-    vx: Final[int]
-    vy: Final[int]
+    _x: int
+    _y: int
+    _vx: Final[int]
+    _vy: Final[int]
+
+    def __init__(self, x: int, y: int, vx: int, vy: int) -> None:
+        self._x = x
+        self._y = y
+        self._vx = vx
+        self._vy = vy
 
     def move(self) -> None:
-        self.x += self.vx
-        self.y += self.vy
+        self._x += self._vx
+        self._y += self._vy
+
+    @property
+    def x(self) -> int:
+        return self._x
+
+    @property
+    def y(self) -> int:
+        return self._y
 
 
 def parse_data(f: TextIO) -> list[Point]:

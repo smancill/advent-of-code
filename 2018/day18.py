@@ -36,10 +36,10 @@ class Area:
                 adj = self._adjacent_acres(i, j)
                 match self._acres[i][j]:
                     case Area.OPEN:
-                        if 3 <= sum(1 for a in adj if a == Area.TREES):
+                        if sum(1 for a in adj if a == Area.TREES) >= 3:
                             updated[i][j] = Area.TREES
                     case Area.TREES:
-                        if 3 <= sum(1 for a in adj if a == Area.LUMBERJACK):
+                        if sum(1 for a in adj if a == Area.LUMBERJACK) >= 3:
                             updated[i][j] = Area.LUMBERJACK
                     case Area.LUMBERJACK:
                         if not (Area.LUMBERJACK in adj and Area.TREES in adj):
@@ -49,7 +49,7 @@ class Area:
     def _adjacent_acres(self, y: int, x: int) -> list[str]:
         return [self._acres[i][j] for i, j in self._adjacent_positions(y, x)]
 
-    @cache
+    @cache  # noqa: B019
     def _adjacent_positions(self, y: int, x: int) -> list[tuple[int, int]]:
         return [
             (i, j)

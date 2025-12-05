@@ -8,17 +8,18 @@ from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from typing import Final, TextIO, TypeAlias
 
-Path: TypeAlias = list[str]
+Name: TypeAlias = str
+Path: TypeAlias = list[Name]
 
 
 @dataclass(frozen=True)
 class Valve:
     rate: int
-    tunnels: list[str]
+    tunnels: list[Name]
 
 
-def parse_data(f: TextIO) -> dict[str, Valve]:
-    def parse_valve(line: str) -> tuple[str, Valve]:
+def parse_data(f: TextIO) -> dict[Name, Valve]:
+    def parse_valve(line: str) -> tuple[Name, Valve]:
         match = re.match(
             r"Valve (?P<name>\w+) .* rate=(?P<rate>\d+); .* valves? (?P<valves>.*)$",
             line,
@@ -34,19 +35,19 @@ def parse_data(f: TextIO) -> dict[str, Valve]:
 
 
 class PathFinder:
-    _valves: Final[dict[str, Valve]]
-    _dist: Final[dict[str, dict[str, int]]]
-    _working: Final[set[str]]
-    _start: Final[str]
+    _valves: Final[dict[Name, Valve]]
+    _dist: Final[dict[Name, dict[Name, int]]]
+    _working: Final[set[Name]]
+    _start: Final[Name]
 
-    def __init__(self, valves: Mapping[str, Valve], start: str):
+    def __init__(self, valves: Mapping[Name, Valve], start: Name):
         self._valves = dict(valves)
         self._dist = self._min_dist(valves)
         self._working = {v for v in self._dist if self._valves[v].rate > 0}
         self._start = start
 
     @staticmethod
-    def _min_dist(valves: Mapping[str, Valve]) -> dict[str, dict[str, int]]:
+    def _min_dist(valves: Mapping[Name, Valve]) -> dict[Name, dict[Name, int]]:
         # https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
         dist = {u: {v: sys.maxsize for v in valves} for u in valves}
         for u in dist:
@@ -84,7 +85,7 @@ class PathFinder:
                 best_path, max_pressure = [], 0
                 ordered = sorted(all_paths(True), key=lambda t: t[1], reverse=True)
                 for i, (path1, p1) in enumerate(ordered):
-                    for (path2, p2) in itertools.islice(ordered, i + 1):
+                    for path2, p2 in itertools.islice(ordered, i + 1):
                         pressure = p1 + p2
                         if pressure < max_pressure:
                             break
@@ -97,7 +98,7 @@ class PathFinder:
                 raise ValueError(f"invalid {travelers=}")
 
     def _traverse(self, max_time: int, intermediate: bool) -> Iterator[Path]:
-        State = tuple[int, str, Path]
+        type State = tuple[int, Name, Path]
 
         queue: deque[State] = deque()
         queue.append((0, self._start, []))
@@ -122,7 +123,7 @@ class PathFinder:
             current = node
         return pressure
 
-    def _time(self, u: str, v: str) -> int:
+    def _time(self, u: Name, v: Name) -> int:
         return self._dist[u][v] + 1
 
     def __str__(self) -> str:
@@ -134,13 +135,13 @@ class PathFinder:
         return "\n".join([header] + columns)
 
 
-def part1(data: dict[str, Valve]) -> int:
+def part1(data: Mapping[Name, Valve]) -> int:
     path_finder = PathFinder(data, "AA")
     _, pressure = path_finder.best_path(max_time=30, travelers=1)
     return pressure
 
 
-def part2(data: dict[str, Valve]) -> int:
+def part2(data: Mapping[Name, Valve]) -> int:
     path_finder = PathFinder(data, "AA")
     _, pressure = path_finder.best_path(max_time=26, travelers=2)
     return pressure

@@ -19,7 +19,7 @@ def parse_data(f: TextIO) -> list[Coord]:
 
 
 def _dist(c1: Coord, c2: Coord) -> int:
-    return sum(abs(a1 - a2) for a1, a2 in zip(c1, c2))
+    return sum(abs(i1 - i2) for i1, i2 in zip(c1, c2, strict=True))
 
 
 def find_constellation(orig: Coord, points: Sequence[Coord]) -> Constellation:

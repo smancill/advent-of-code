@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import re
-from collections.abc import Sequence
-from typing import Final, Mapping, TextIO, TypeAlias
+from collections.abc import Mapping, Sequence
+from typing import Final, TextIO, TypeAlias
 
 Quantity: TypeAlias = tuple[int, str]
 Rules: TypeAlias = Mapping[str, Sequence[Quantity]]
@@ -27,7 +27,7 @@ def part1(rules: Rules) -> int:
     # Solve without recursion
     def contains(bag: str, target: str) -> bool:
         visited = set()
-        queue = set(b for _, b in rules[bag])
+        queue = {b for _, b in rules[bag]}
         while queue:
             current = queue.pop()
             if current in visited:

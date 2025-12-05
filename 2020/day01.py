@@ -14,7 +14,7 @@ def find_entries(numbers: Sequence[int], size: int) -> int:
     for entries in itertools.combinations(numbers, size):
         if sum(entries) == 2020:
             return math.prod(entries)
-    assert False
+    raise AssertionError
 
 
 def part1(data: Sequence[int]) -> int:

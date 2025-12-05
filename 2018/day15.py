@@ -113,6 +113,7 @@ class Battle:
         if debug := logging.getLogger().isEnabledFor(logging.DEBUG):
             logging.debug("Initially:")
             logging.debug(f"{self}")
+
         for k in count(1):
             winner = round()
             if debug:
@@ -121,7 +122,7 @@ class Battle:
             if winner is not None:
                 return self._winner(winner, k - 1)
 
-        assert False
+        raise AssertionError
 
     def _move(self, unit: Unit, enemies: Sequence[Unit]) -> None:
         if self._has_enemies_in_range(unit):
@@ -231,7 +232,7 @@ def part2(data: Sequence[str]) -> Winner:
             if logging.getLogger().isEnabledFor(logging.INFO):
                 logging.info(f"{battle}")
             return result
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

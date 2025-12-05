@@ -23,11 +23,11 @@ def part1(box_ids: Sequence[str]) -> int:
 
 
 def part2(box_ids: Sequence[str]) -> str:
-    for x, y in combinations(box_ids, 2):
-        common = [a for a, b in zip(x, y) if a == b]
-        if len(common) == len(x) - 1:
+    for b1, b2 in combinations(box_ids, 2):
+        common = [c1 for c1, c2 in zip(b1, b2, strict=True) if c1 == c2]
+        if len(common) == len(b1) - 1:
             return "".join(common)
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

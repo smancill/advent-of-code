@@ -3,9 +3,9 @@
 from collections.abc import Sequence
 from functools import cmp_to_key
 from math import prod
-from typing import Any, TextIO, TypeAlias, Union
+from typing import TextIO, TypeAlias
 
-Packet: TypeAlias = list[Union[int, "Packet"]]
+Packet: TypeAlias = list[int | "Packet"]
 Pair: TypeAlias = tuple[Packet, Packet]
 
 
@@ -55,7 +55,7 @@ class PacketParser:
             self._val = ""
 
 
-def parse_data(f: TextIO) -> list[Any]:
+def parse_data(f: TextIO) -> list[Pair]:
     def parse_pair(lines: str) -> Pair:
         packet1, packet2 = lines.splitlines()
         parser = PacketParser()
@@ -81,10 +81,10 @@ def cmp(left: Packet | int, right: Packet | int) -> int:
             raise ValueError(f"({left}, {right})")
 
 
-def sort(pairs: Sequence[Pair], extra: list[Packet] = []) -> list[Packet]:
+def sort(pairs: Sequence[Pair], extra: list[Packet] = []) -> list[Packet]:  # noqa: B006
     packets = [packet for pair in pairs for packet in pair] + extra
     packets = sorted(packets, key=cmp_to_key(cmp))
-    return packets
+    return packets  # noqa: RET504
 
 
 def part1(data: Sequence[Pair]) -> int:

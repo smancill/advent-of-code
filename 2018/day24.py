@@ -6,46 +6,71 @@ import re
 from collections.abc import Sequence, Set
 from dataclasses import dataclass
 from itertools import count
-from typing import Any, Final, Self, TextIO, TypeAlias
+from typing import Final, Self, TextIO, TypeAlias
 
 
-@dataclass
+@dataclass(frozen=True)
+class Attributes:
+    hp: int
+    atk_dmg: int
+    atk_type: str
+    initiative: int
+    weak: Set[str]
+    immune: Set[str]
+
+
 class Group:
-    id: Final[int]
-    side: Final[str]
-    units: int
-    hp: Final[int]
-    atk_dmg: Final[int]
-    atk_type: Final[str]
-    ini: Final[int]
-    weak: Final[Set[str]]
-    immune: Final[Set[str]]
+    _id: Final[int]
+    _side: Final[str]
+    _units: int
+    _attr: Attributes
+
+    def __init__(self, id: int, side: str, units: int, attr: Attributes) -> None:
+        self._id = id
+        self._side = side
+        self._units = units
+        self._attr = attr
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def side(self) -> str:
+        return self._side
+
+    @property
+    def units(self) -> int:
+        return self._units
 
     @property
     def power(self) -> int:
-        return self.units * self.atk_dmg
+        return self._units * self._attr.atk_dmg
+
+    @property
+    def initiative(self) -> int:
+        return self._attr.initiative
 
     def dmg(self, enemy: Self) -> int:
-        if self.atk_type in enemy.immune:
+        if self._attr.atk_type in enemy._attr.immune:
             return 0
-        elif self.atk_type in enemy.weak:
+        if self._attr.atk_type in enemy._attr.weak:
             return 2 * self.power
-        else:
-            return self.power
+        return self.power
 
     def attack(self, enemy: Self) -> int:
-        killed = min(self.dmg(enemy) // enemy.hp, enemy.units)
-        enemy.units -= killed
+        killed = min(self.dmg(enemy) // enemy._attr.hp, enemy._units)
+        enemy._units -= killed
         return killed
 
     def is_destroyed(self) -> bool:
-        return self.units <= 0
+        return self._units <= 0
 
     def __hash__(self) -> int:
-        return hash((self.id, self.side))
+        return hash((self._id, self._side))
 
-    def _eq__(self, other: Any) -> int:
-        return (self.id, self.side) == (other.id, other.side)
+    def _eq__(self, other: Self) -> int:
+        return (self._id, self._side) == (other._id, other._side)
 
 
 Army: TypeAlias = list[Group]
@@ -75,16 +100,15 @@ def parse_army(data: str, boost: int = 0) -> Army:
         return effects["weak"], effects["immune"]
 
     def make_group(i: int, match: re.Match[str]) -> Group:
-        return Group(
-            i + 1,
-            name,
-            int(match.group("units")),
+        units = int(match.group("units"))
+        attr = Attributes(
             int(match.group("hp")),
             int(match.group("atk_dmg")) + boost,
             match.group("atk_type"),
             int(match.group("ini")),
             *parse_effects(match.group("effects")),
         )
+        return Group(i + 1, name, units, attr)
 
     name, *groups = data.splitlines()
     name = name.rstrip(":")
@@ -131,12 +155,14 @@ def _select_targets(immune_sys: Army, infection: Army) -> list[Target]:
     def select(army: Army, enemies: Sequence[Group]) -> list[Target]:
         targets = []
         untargeted = set(enemies)
-        for group in sorted(army, key=lambda g: (g.power, g.ini), reverse=True):
+        for group in sorted(army, key=lambda g: (g.power, g.initiative), reverse=True):
             if not untargeted:
                 break
             if verbose:
                 _log_targets(group, untargeted)
-            target = max(untargeted, key=lambda e: (group.dmg(e), e.power, e.ini))
+            target = max(
+                untargeted, key=lambda e: (group.dmg(e), e.power, e.initiative)
+            )
             if group.dmg(target) > 0:
                 targets.append((group, target))
                 untargeted.remove(target)
@@ -157,7 +183,7 @@ def _attack_targets(
 
     total_killed = 0
 
-    for group, target in sorted(targets, key=lambda t: t[0].ini, reverse=True):
+    for group, target in sorted(targets, key=lambda t: t[0].initiative, reverse=True):
         if group.is_destroyed():
             # Group was destroyed by a previous attack
             continue
@@ -208,7 +234,7 @@ def part2(data: tuple[str, str]) -> int:
         survived, units = battle(immune_sys, infection)
         if survived:
             return units
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

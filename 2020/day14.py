@@ -28,7 +28,7 @@ def parse_write(line: str) -> tuple[int, int]:
 
 def part1(data: Sequence[str]) -> int:
     def apply_mask(mask: str, n: str) -> int:
-        n = "".join(b if m == "X" else m for b, m in zip(n, mask))
+        n = "".join(b if m == "X" else m for b, m in zip(n, mask, strict=True))
         return int(n, 2)
 
     mem = {}
@@ -45,7 +45,7 @@ def part1(data: Sequence[str]) -> int:
 
 def part2(data: Sequence[str]) -> int:
     def apply_mask(mask: str, addr: str) -> Iterator[int]:
-        addr = "".join(b if m == "0" else m for b, m in zip(addr, mask))
+        addr = "".join(b if m == "0" else m for b, m in zip(addr, mask, strict=True))
         return gen_address(addr)
 
     def gen_address(addr: str) -> Iterator[int]:

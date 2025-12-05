@@ -57,7 +57,7 @@ class Rock:
 
     @classmethod
     def make(cls, data: Sequence[str]) -> Self:
-        return Rock([list(line) for line in data])
+        return cls([list(line) for line in data])
 
     @property
     def width(self) -> int:
@@ -181,7 +181,7 @@ class Tunnel:
 
     @staticmethod
     def _inside_walls(c: Coord, r: Rock) -> bool:
-        return 0 <= c.x and c.x + r.width - 1 < Tunnel.WIDTH
+        return c.x >= 0 and c.x + r.width - 1 < Tunnel.WIDTH
 
     @staticmethod
     def _at_bottom(c: Coord, r: Rock) -> bool:
@@ -195,14 +195,12 @@ class Tunnel:
 
 def part1(data: JetPattern) -> int:
     tunnel = Tunnel(data)
-    units = tunnel.falling_rocks(2022)
-    return units
+    return tunnel.falling_rocks(2022)
 
 
 def part2(data: JetPattern) -> int:
     tunnel = Tunnel(data)
-    units = tunnel.falling_rocks(1_000_000_000_000)
-    return units
+    return tunnel.falling_rocks(1_000_000_000_000)
 
 
 def main() -> None:

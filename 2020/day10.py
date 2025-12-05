@@ -8,7 +8,7 @@ from typing import TextIO
 def parse_data(f: TextIO) -> list[int]:
     jolts = sorted(int(l) for l in f)
     jolts = [0] + jolts + [jolts[-1] + 3]
-    return jolts
+    return jolts  # noqa: RET504
 
 
 def part1(jolts: Sequence[int]) -> int:
@@ -21,7 +21,7 @@ def part1(jolts: Sequence[int]) -> int:
 def part2(jolts: Sequence[int]) -> int:
     diffs = defaultdict(lambda: 0)
     diffs[0] = 1
-    for i in range(0, len(jolts) - 1):
+    for i in range(len(jolts) - 1):
         # For each reachable number, accumulate the ways to reach it
         for j in range(i + 1, len(jolts)):
             if jolts[j] - jolts[i] > 3:

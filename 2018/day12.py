@@ -8,6 +8,8 @@ Notes: TypeAlias = Mapping[str, str]
 NO_PLANT: Final = "."
 PLANT: Final = "#"
 
+L: Final = 3
+
 
 def parse_data(f: TextIO) -> tuple[str, Notes]:
     def parse_state(line: str) -> str:
@@ -27,17 +29,16 @@ def parse_data(f: TextIO) -> tuple[str, Notes]:
 
 def spread_plants(state: str, notes: Notes, total_gen: int) -> tuple[str, int]:
     # The rules go from i-2 to i+2 for each pot i
-    L = 3
     # Add L <no_plant> at each side
     pots = NO_PLANT * L + state + NO_PLANT * L
     # The index of the pot 0
     idx = L
 
-    for g in range(total_gen):
+    for i in range(total_gen):
         # Apply rules
         tmp = [NO_PLANT] * len(pots)
-        for i in range(2, len(pots) - 2):
-            tmp[i] = notes.get(pots[i - 2 : i + 3], NO_PLANT)
+        for j in range(2, len(pots) - 2):
+            tmp[j] = notes.get(pots[j - 2 : j + 3], NO_PLANT)
         new_gen = "".join(tmp)
 
         # Keep at least L <no_plant> at the end of the state
@@ -59,7 +60,7 @@ def spread_plants(state: str, notes: Notes, total_gen: int) -> tuple[str, int]:
             # so no need to iterate, just calculate the zero index for the
             # remaining iterations
             if new_gen == pots:
-                idx -= (total_gen - g - 1) * f
+                idx -= (total_gen - i - 1) * f
                 break
 
         pots = new_gen

@@ -24,7 +24,7 @@ def _log_cups(linked: Sequence[int], current: int, move: int) -> None:
     if shift > 0:
         cups = cups[-shift:] + cups[:-shift]
 
-    out = "".join(f' {c} ' for c in cups).replace(f" {current} ", f"({current})")
+    out = "".join(f" {c} " for c in cups).replace(f" {current} ", f"({current})")
     logging.debug(f"cups: {out}")
 
 
@@ -50,7 +50,7 @@ def arrange(cups: Sequence[int], *, moves: int) -> list[int]:
 
     # Create linked list (index -> value)
     linked = [0] * (n_cups + 1)
-    for i in range(0, n_cups - 1):
+    for i in range(n_cups - 1):
         linked[cups[i]] = cups[i + 1]
     linked[cups[-1]] = cups[0]
 

@@ -24,7 +24,7 @@ class BoundingBox:
     zlim: Final[tuple[int, int]]
 
     def __init__(self, cubes: Set[Coord]):
-        xs, ys, zs = zip(*cubes)
+        xs, ys, zs = zip(*cubes, strict=True)
 
         self.xlim = min(xs) - 1, max(xs) + 1
         self.ylim = min(ys) - 1, max(ys) + 1

@@ -33,7 +33,7 @@ valid_fields: Final = {
 
 
 def is_valid_basic(passport: Passport) -> bool:
-    missing = set(valid_fields) - {"cid"} - set(f for f, _ in passport)
+    missing = set(valid_fields) - {"cid"} - {f for f, _ in passport}
     return not missing
 
 

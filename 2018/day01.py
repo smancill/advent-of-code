@@ -19,7 +19,7 @@ def part2(changes: Sequence[int]) -> int:
         if f in freqs:
             return f
         freqs.add(f)
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

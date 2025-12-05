@@ -29,9 +29,9 @@ def parse_data(f: TextIO) -> Trees:
 
 def _views_from(trees: Trees, x: int, y: int) -> list[list[int]]:
     return [
-        [trees[x, i] for i in reversed(range(0, y))],
+        [trees[x, i] for i in reversed(range(y))],
         [trees[x, i] for i in range(y + 1, trees.height)],
-        [trees[j, y] for j in reversed(range(0, x))],
+        [trees[j, y] for j in reversed(range(x))],
         [trees[j, y] for j in range(x + 1, trees.width)],
     ]
 

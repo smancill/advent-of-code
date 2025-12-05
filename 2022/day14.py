@@ -22,7 +22,7 @@ def parse_data(f: TextIO) -> list[Rock]:
 
     def parse_rock(line: str) -> Rock:
         coords = [parse_coord(c) for c in line.strip().split(" -> ")]
-        return [r for r in zip(coords[:-1], coords[1:])]
+        return list(zip(coords[:-1], coords[1:], strict=True))
 
     return [parse_rock(l) for l in f]
 
@@ -82,11 +82,10 @@ class Cave:
             if x0 == x1:
                 y0, y1 = (y0, y1) if y0 < y1 else (y1, y0)
                 return [(x0, y) for y in range(y0, y1 + 1)]
-            elif y0 == y1:
+            if y0 == y1:
                 x0, x1 = (x0, x1) if x0 < x1 else (x1, x0)
                 return [(x, y0) for x in range(x0, x1 + 1)]
-            else:
-                raise ValueError(line)
+            raise ValueError(line)
 
         return {c for r in rocks for l in r for c in line_coords(l)}
 
@@ -124,7 +123,7 @@ class Cave:
         return floor_delta > 0
 
     def fill(self) -> None:
-        M = self._data
+        M = self._data  # noqa: N806
 
         def move_to(x: int, y: int) -> Coord | None:
             if M[(target := (x, y + 1))] == AIR:

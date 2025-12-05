@@ -89,7 +89,7 @@ def execute_program(data: Sequence[str], part1: bool = True) -> int:
 
         regs[ip] += 1
 
-    assert False
+    raise AssertionError
 
 
 def main() -> None:

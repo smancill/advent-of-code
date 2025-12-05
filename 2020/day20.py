@@ -50,7 +50,7 @@ class Container(Generic[T]):
         """Rotate 90 degrees clockwise."""
         # Transpose
         n, m = self._height, self._width
-        T = [[self._data[i][j] for i in range(n)] for j in range(m)]
+        T = [[self._data[i][j] for i in range(n)] for j in range(m)]  # noqa: N806
 
         # Reverse each row
         self._data = [row[::-1] for row in T]
@@ -152,7 +152,7 @@ class AssembledTiles(Container[Tile]):
         self._trimmed = True
 
     def _tile_rows(self, tiles: Sequence[Tile]) -> Iterator[tuple[Sequence[str], ...]]:
-        return zip(*(t.data for t in tiles))
+        return zip(*(t.data for t in tiles), strict=True)
 
     def __str__(self) -> str:
         def assembled_line(tr: tuple[Sequence[str], ...]) -> str:

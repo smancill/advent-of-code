@@ -24,7 +24,7 @@ def detect(secret: int, key: int) -> int:
 # https://en.wikipedia.org/wiki/Modular_exponentiation
 def part1(pubkeys: tuple[int, int]) -> int:
     exp = [detect(SECRET, key) for key in pubkeys]
-    enckeys = [pow(k, e, MAGIC) for k, e in zip(reversed(pubkeys), exp)]
+    enckeys = [pow(k, e, MAGIC) for k, e in zip(reversed(pubkeys), exp, strict=True)]
 
     return enckeys[0]
 
