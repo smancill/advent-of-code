@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
+import re
 from collections import defaultdict
 from math import prod
-import re
 from typing import Iterator, NamedTuple, TextIO
 
 type Schematic = list[str]
@@ -38,15 +38,15 @@ def get_border(pos: Position) -> list[Coord]:
 
     # top
     for i in range(pos.start.x - 1, pos.end.x + 1):
-        border.append((i, pos.start.y - 1))
+        border.append(Coord(i, pos.start.y - 1))
 
     # right / left
-    border.append((pos.start.x - 1, pos.start.y))
-    border.append((pos.end.x, pos.start.y))
+    border.append(Coord(pos.start.x - 1, pos.start.y))
+    border.append(Coord(pos.end.x, pos.start.y))
 
     # bottom
     for i in range(pos.start.x - 1, pos.end.x + 1):
-        border.append((i, pos.start.y + 1))
+        border.append(Coord(i, pos.start.y + 1))
 
     return border
 

@@ -50,7 +50,7 @@ class Container(Generic[T]):
         """Rotate 90 degrees clockwise."""
         # Transpose
         n, m = self._height, self._width
-        T = [[self._data[i][j] for i in range(n)] for j in range(m)]
+        T = [[self._data[i][j] for i in range(n)] for j in range(m)]  # noqa: N806
 
         # Reverse each row
         self._data = [row[::-1] for row in T]

@@ -11,9 +11,8 @@ def parse_data(f: TextIO) -> tuple[Rules, list[str]]:
     def parse_match(rule: str) -> Rule:
         if '"' in rule:
             return rule.strip().replace('"', "")
-        else:
-            subrules = [s.split() for s in rule.split("|")]
-            return [list(map(int, s)) for s in subrules]
+        subrules = [s.split() for s in rule.split("|")]
+        return [list(map(int, s)) for s in subrules]
 
     def parse_rule(line: str) -> tuple[int, Rule]:
         n, r = line.split(":")

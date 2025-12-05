@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from collections.abc import Sequence
 import re
+from collections.abc import Sequence
 from typing import TextIO
 
 
@@ -22,16 +22,26 @@ def part1(data: Sequence[str]) -> int:
 def part2(data: Sequence[str]) -> int:
     def get_digit(d: str) -> int:
         match d:
-            case "one": return 1
-            case "two": return 2
-            case "three": return 3
-            case "four": return 4
-            case "five": return 5
-            case "six": return 6
-            case "seven": return 7
-            case "eight": return 8
-            case "nine": return 9
-            case _: return int(d)
+            case "one":
+                return 1
+            case "two":
+                return 2
+            case "three":
+                return 3
+            case "four":
+                return 4
+            case "five":
+                return 5
+            case "six":
+                return 6
+            case "seven":
+                return 7
+            case "eight":
+                return 8
+            case "nine":
+                return 9
+            case _:
+                return int(d)
 
     def get_number(s: str) -> int:
         m = re.findall(r"(?=(one|two|three|four|five|six|seven|eight|nine|\d))", s)

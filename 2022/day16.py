@@ -84,7 +84,7 @@ class PathFinder:
                 best_path, max_pressure = [], 0
                 ordered = sorted(all_paths(True), key=lambda t: t[1], reverse=True)
                 for i, (path1, p1) in enumerate(ordered):
-                    for (path2, p2) in itertools.islice(ordered, i + 1):
+                    for path2, p2 in itertools.islice(ordered, i + 1):
                         pressure = p1 + p2
                         if pressure < max_pressure:
                             break
@@ -97,7 +97,7 @@ class PathFinder:
                 raise ValueError(f"invalid {travelers=}")
 
     def _traverse(self, max_time: int, intermediate: bool) -> Iterator[Path]:
-        State = tuple[int, str, Path]
+        type State = tuple[int, str, Path]
 
         queue: deque[State] = deque()
         queue.append((0, self._start, []))

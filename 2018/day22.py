@@ -128,8 +128,8 @@ class Cave:
     def risk(self) -> int:
         return sum(
             self[x, y].risk
-            for y in range(0, self.target[1] + 1)
-            for x in range(0, self.target[0] + 1)
+            for y in range(self.target[1] + 1)
+            for x in range(self.target[0] + 1)
         )
 
     def __getitem__(self, pos: Coord) -> Region:
@@ -175,7 +175,7 @@ def rescue(cave: Cave) -> int:
         tool: Tool
 
     queue: list[Move] = []
-    visited: dict[tuple[Coord, Tool], int] = dict()
+    visited: dict[tuple[Coord, Tool], int] = {}
 
     heappush(queue, Move(0, 0, cave.mouth, Tool.TORCH))
     while queue:

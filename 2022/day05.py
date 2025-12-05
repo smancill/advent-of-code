@@ -35,7 +35,7 @@ def parse_data(f: TextIO) -> tuple[Stacks, list[Move]]:
 def part1(stacks: Stacks, moves: Sequence[Move]) -> str:
     stacks = deepcopy(stacks)
     for n, source, target in moves:
-        crates = list(stacks[source].pop() for _ in range(n))
+        crates = [stacks[source].pop() for _ in range(n)]
         stacks[target].extend(crates)
     return "".join(s[-1] for s in stacks.values())
 
@@ -43,7 +43,7 @@ def part1(stacks: Stacks, moves: Sequence[Move]) -> str:
 def part2(stacks: Stacks, moves: Sequence[Move]) -> str:
     stacks = deepcopy(stacks)
     for n, source, target in moves:
-        crates = list(stacks[source].pop() for _ in range(n))
+        crates = [stacks[source].pop() for _ in range(n)]
         stacks[target].extend(reversed(crates))
     return "".join(s[-1] for s in stacks.values())
 

@@ -28,10 +28,9 @@ class Group:
     def dmg(self, enemy: Self) -> int:
         if self.atk_type in enemy.immune:
             return 0
-        elif self.atk_type in enemy.weak:
+        if self.atk_type in enemy.weak:
             return 2 * self.power
-        else:
-            return self.power
+        return self.power
 
     def attack(self, enemy: Self) -> int:
         killed = min(self.dmg(enemy) // enemy.hp, enemy.units)

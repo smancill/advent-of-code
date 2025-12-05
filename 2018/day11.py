@@ -34,8 +34,8 @@ def make_grid(serial: int) -> Grid:
 # Optimize for fun with partial sums
 # but brute force O(k^2 n^2) would do just fine for k=3
 def max_power_fixed(grid: Grid, k: int = 3) -> MaxPower:
-    L = (N - k) + 1
-    P = [[0] * (N + 1) for _ in range(N + 1)]
+    L = (N - k) + 1  # noqa: N806
+    P = [[0] * (N + 1) for _ in range(N + 1)]  # noqa: N806
 
     for y in range(1, N + 1):
         t = sum(grid[y][x] for x in range(1, k + 1))
@@ -60,7 +60,7 @@ def max_power_fixed(grid: Grid, k: int = 3) -> MaxPower:
 # Brute force would be O(n^5), too much.
 # Use cumulative sums to make it O(n^3).
 def max_power_dial(grid: Grid, start: int = 1, end: int = N) -> MaxPower:
-    C = [[0] * (N + 1) for _ in range(N + 1)]
+    C = [[0] * (N + 1) for _ in range(N + 1)]  # noqa: N806
     for y in range(1, N + 1):
         for x in range(1, N + 1):
             C[y][x] = grid[y][x] + C[y - 1][x] + C[y][x - 1] - C[y - 1][x - 1]

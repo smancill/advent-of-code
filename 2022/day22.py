@@ -31,7 +31,7 @@ def parse_data(f: TextIO) -> tuple[Grid, Moves]:
     return parse_grid(grid_data), parse_moves(moves_data)
 
 
-def _wrap2D(grid: Grid, pos: Coord, facing: Coord) -> Coord:
+def _wrap2d(grid: Grid, pos: Coord, facing: Coord) -> Coord:
     x, y = pos
     dx, dy = facing
     match dx, dy:
@@ -54,7 +54,7 @@ class PathFinder:
     def __init__(self, grid: Grid, moves: Moves):
         self._grid = grid
         self._moves = moves
-        self._wrap = partial(_wrap2D, self._grid)
+        self._wrap = partial(_wrap2d, self._grid)
 
     def traverse(self) -> tuple[Coord, Coord]:
         x, y = self._orig()

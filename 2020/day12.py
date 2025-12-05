@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Final, Self, TextIO, TypeAlias
+from typing import Final, Self, TextIO, TypeAlias
 
 Column: TypeAlias = tuple[int, int]
 Rotation: TypeAlias = tuple[Column, Column]
@@ -41,17 +41,17 @@ class Vector:
         u, v = rotation[angle % 360]
         self.x, self.y = self.x * u[0] + self.y * v[0], self.x * u[1] + self.y * v[1]
 
-    def __add__(self, other: Any) -> Self:
+    def __add__(self, other: Self) -> "Vector":
         return Vector(self.x + other.x, self.y + other.y)
 
-    def __iadd__(self, other: Any) -> Self:
+    def __iadd__(self, other: Self) -> Self:
         self.x, self.y = self.x + other.x, self.y + other.y
         return self
 
-    def __mul__(self, factor: int) -> Self:
+    def __mul__(self, factor: int) -> "Vector":
         return Vector(factor * self.x, factor * self.y)
 
-    def __rmul__(self, factor: int) -> Self:
+    def __rmul__(self, factor: int) -> "Vector":
         return self.__mul__(factor)
 
     def __str__(self) -> str:

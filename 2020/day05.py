@@ -7,7 +7,7 @@ from typing import TextIO
 def parse_data(f: TextIO) -> list[int]:
     # Boarding passes are actually binary numbers,
     # described in a fancy way
-    to_binary = str.maketrans('FBLR', '0101')
+    to_binary = str.maketrans("FBLR", "0101")
 
     def parse_pass(line: str) -> int:
         bp = line.strip().translate(to_binary)

@@ -13,7 +13,7 @@ def parse_data(f: TextIO) -> list[int]:
 def decrypt(encrypted: Sequence[int], key: int, iterations: int) -> Coord:
     # Use indices to ensure unique positions, because of duplicated numbers
     numbers = [key * n for n in encrypted]
-    indices = [i for i in range(len(numbers))]
+    indices = list(range(len(numbers)))
 
     # Mix
     initial = indices[:]

@@ -27,7 +27,7 @@ def part1(rules: Rules) -> int:
     # Solve without recursion
     def contains(bag: str, target: str) -> bool:
         visited = set()
-        queue = set(b for _, b in rules[bag])
+        queue = {b for _, b in rules[bag]}
         while queue:
             current = queue.pop()
             if current in visited:

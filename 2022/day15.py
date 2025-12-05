@@ -73,7 +73,7 @@ def _merge_segments(segments: set[range]) -> set[range]:
 
 
 def _border(sensor: Sensor) -> tuple[list[Line], list[Line]]:
-    (sx, sy), D = sensor.position, sensor.radius + 1
+    (sx, sy), d = sensor.position, sensor.radius + 1
 
     # Coordinates:
     #           (sx, y0)
@@ -81,8 +81,8 @@ def _border(sensor: Sensor) -> tuple[list[Line], list[Line]]:
     # (x0, sy)  (sx, sy)  (x1, sy)
     #
     #           (sx, y1)
-    x0, x1 = sx - D, sx + D
-    y0, y1 = sy - D, sy + D  # noqa: F841
+    x0, x1 = sx - d, sx + d
+    y0, y1 = sy - d, sy + d  # noqa: F841
 
     # Line (x₁, y₁) -> (x₂, y₂):
     #   Ax + By = C

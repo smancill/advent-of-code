@@ -71,7 +71,7 @@ def execute_program(
     while 0 <= regs[ip] < len(prog):
         if optimize and regs[ip] == 1:
             # get main register used by the program (user-defined)
-            C = prog[4][-2]
+            C = prog[4][-2]  # noqa: N806
 
             # Running Part 2 seems that it won't finish anytime soon.
             # Fix by intersecting and optimizing loop in instructions 1-16
@@ -84,12 +84,9 @@ def execute_program(
             #         if rA * rB == rC then
             #             r0 += rA
             n = regs[C]
-            factors = set(
-                f
-                for i in range(1, int(n**0.5) + 1)
-                for f in [i, n // i]
-                if n % i == 0
-            )
+            factors = {
+                f for i in range(1, int(n**0.5) + 1) for f in [i, n // i] if n % i == 0
+            }
             regs[0] = sum(factors)
             regs[ip] = 256
         else:

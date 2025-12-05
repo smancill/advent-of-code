@@ -81,7 +81,7 @@ def cmp(left: Packet | int, right: Packet | int) -> int:
             raise ValueError(f"({left}, {right})")
 
 
-def sort(pairs: Sequence[Pair], extra: list[Packet] = []) -> list[Packet]:
+def sort(pairs: Sequence[Pair], extra: list[Packet] = []) -> list[Packet]:  # noqa: B006
     packets = [packet for pair in pairs for packet in pair] + extra
     packets = sorted(packets, key=cmp_to_key(cmp))
     return packets

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from collections.abc import Sequence
 from collections import Counter
+from collections.abc import Sequence
 from dataclasses import dataclass
 from math import prod
 from typing import TextIO

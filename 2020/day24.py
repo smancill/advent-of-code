@@ -34,7 +34,7 @@ def _move(coord: HexCoord, delta: HexCoord) -> HexCoord:
 def _create_tiles(data: Sequence[Steps]) -> dict[HexCoord, int]:
     tiles: dict[HexCoord, int] = defaultdict(int)
     for path in data:
-        deltas = map(lambda p: direction[p], path)
+        deltas = (direction[p] for p in path)
         coord = functools.reduce(_move, deltas, (0, 0, 0))
         tiles[coord] ^= 1
     return tiles

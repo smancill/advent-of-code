@@ -30,10 +30,9 @@ def part2(data: Sequence[int], preamble: int = PREAMBLE) -> int:
             if sum == inv:
                 sub = data[i : j + 1]
                 return min(sub) + max(sub)
-            elif sum > inv:
+            if sum > inv:
                 break
-            else:
-                j += 1
+            j += 1
 
     assert False
 
