@@ -1,0 +1,28 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day05 import parse_data, part1, part2
+
+    >>> ranges, ingredients = parse_data(StringIO("""\
+    ... 3-5
+    ... 10-14
+    ... 16-20
+    ... 12-18
+    ... 
+    ... 1
+    ... 5
+    ... 8
+    ... 11
+    ... 17
+    ... 32
+    ... """))
+
+Part 1:
+
+    >>> part1(ranges, ingredients)
+    3
+
+Part 2:
+
+    >>> part2(ranges)
+    14
