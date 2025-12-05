@@ -1,3 +1,6 @@
+[project]
+requires-python = ">= 3.12"
+
 [tool.mypy]
 strict = true
 local_partial_types = true
@@ -7,3 +10,7 @@ warn_unused_ignores = true
 typeCheckingMode = "basic"
 reportUnboundVariable = "warning"
 reportUnusedVariable = "warning"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "C4", "PIE", "RET", "SIM", "I", "N"]
+ignore = ["E501", "E741", "SIM115"]
