@@ -1,0 +1,23 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day06 import parse_data, part1, part2
+
+Part 1:
+
+    >>> data = parse_data(StringIO("""\
+    ... turn on 0,0 through 999,999
+    ... toggle 0,0 through 999,0
+    ... turn off 499,499 through 500,500
+    ... """))
+    >>> part1(data)
+    998996
+
+Part 2:
+
+    >>> data = parse_data(StringIO("""\
+    ... turn on 0,0 through 0,0
+    ... toggle 0,0 through 999,999
+    ... """))
+    >>> part2(data)
+    2000001
