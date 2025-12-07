@@ -3,9 +3,9 @@
 import itertools
 from collections import Counter
 from collections.abc import Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Coord: TypeAlias = tuple[int, ...]
+type Coord = tuple[int, ...]
 
 
 def read_data(f: TextIO) -> list[str]:

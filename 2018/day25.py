@@ -2,10 +2,10 @@
 
 import re
 from collections.abc import Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Coord: TypeAlias = tuple[int, int, int, int]
-Constellation: TypeAlias = set[Coord]
+type Coord = tuple[int, int, int, int]
+type Constellation = set[Coord]
 
 MAX_DIST: Final = 3
 

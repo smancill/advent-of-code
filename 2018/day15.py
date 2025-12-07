@@ -6,10 +6,10 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from io import StringIO
 from itertools import count
-from typing import Final, Self, TextIO, TypeAlias
+from typing import Final, Self, TextIO
 
-Position: TypeAlias = tuple[int, int]
-Move: TypeAlias = tuple[Position, Position]
+type Position = tuple[int, int]
+type Move = tuple[Position, Position]
 
 
 def read_data(f: TextIO) -> list[str]:

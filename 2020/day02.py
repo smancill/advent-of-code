@@ -3,7 +3,7 @@
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import NewType, TextIO, TypeAlias
+from typing import NewType, TextIO
 
 
 @dataclass(frozen=True)
@@ -15,7 +15,7 @@ class Policy:
 
 Password = NewType("Password", str)
 
-Entry: TypeAlias = tuple[Password, Policy]
+type Entry = tuple[Password, Policy]
 
 
 def parse_data(f: TextIO) -> list[Entry]:

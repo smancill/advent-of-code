@@ -3,11 +3,11 @@
 import re
 from collections.abc import Callable
 from functools import partial
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Coord: TypeAlias = tuple[int, int]
-Grid: TypeAlias = list[str]
-Moves: TypeAlias = list[int | str]
+type Coord = tuple[int, int]
+type Grid = list[str]
+type Moves = list[int | str]
 
 
 def parse_data(f: TextIO) -> tuple[Grid, Moves]:

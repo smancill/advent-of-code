@@ -4,9 +4,9 @@ from collections.abc import Mapping, Set
 from enum import IntEnum
 from heapq import heappop, heappush
 from io import StringIO
-from typing import Final, NamedTuple, TextIO, TypeAlias
+from typing import Final, NamedTuple, TextIO
 
-Coord: TypeAlias = tuple[int, int]
+type Coord = tuple[int, int]
 
 
 class RegionType(IntEnum):
@@ -64,7 +64,7 @@ class Region:
 
 
 class Cave:
-    RegionMap: TypeAlias = list[list[Region]]
+    type RegionMap = list[list[Region]]
 
     _data: Final[RegionMap]
     _target: Final[Coord]

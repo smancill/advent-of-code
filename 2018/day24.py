@@ -6,7 +6,7 @@ import re
 from collections.abc import Sequence, Set
 from dataclasses import dataclass
 from itertools import count
-from typing import Final, Self, TextIO, TypeAlias
+from typing import Final, Self, TextIO
 
 
 @dataclass(frozen=True)
@@ -73,9 +73,9 @@ class Group:
         return (self._id, self._side) == (other._id, other._side)
 
 
-Army: TypeAlias = list[Group]
+type Army = list[Group]
 
-Target: TypeAlias = tuple[Group, Group]
+type Target = tuple[Group, Group]
 
 
 def parse_data(f: TextIO) -> tuple[str, str]:

@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping, Sequence
 from enum import Enum
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
 
 class Shape(Enum):
@@ -17,7 +17,7 @@ class Result(Enum):
     WIN = 6
 
 
-Round: TypeAlias = tuple[str, str]
+type Round = tuple[str, str]
 
 
 ROUND_RESULT: Final[Mapping[tuple[Shape, Shape], Result]] = {

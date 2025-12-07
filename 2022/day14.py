@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from collections.abc import Iterator, Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
 AIR: Final = "."
 ROCK: Final = "#"
@@ -10,9 +10,9 @@ SAND: Final = "o"
 SOURCE: Final = "+"
 ORIG: Final = 500
 
-Limits: TypeAlias = tuple[int, int]
-Coord: TypeAlias = tuple[int, int]
-Rock: TypeAlias = list[tuple[Coord, Coord]]
+type Limits = tuple[int, int]
+type Coord = tuple[int, int]
+type Rock = list[tuple[Coord, Coord]]
 
 
 def parse_data(f: TextIO) -> list[Rock]:

@@ -2,9 +2,9 @@
 
 import heapq
 from collections.abc import Iterator, Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Coord: TypeAlias = tuple[int, int]
+type Coord = tuple[int, int]
 
 
 class HeightMap:

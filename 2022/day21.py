@@ -3,7 +3,7 @@
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
 from types import MappingProxyType
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
 
 @dataclass(frozen=True)
@@ -13,8 +13,8 @@ class Operation:
     op: str
 
 
-Operator: TypeAlias = Callable[[int, int], int]
-Action: TypeAlias = int | Operation
+type Operator = Callable[[int, int], int]
+type Action = int | Operation
 
 
 operators: Final = MappingProxyType(

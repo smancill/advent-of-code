@@ -3,10 +3,10 @@
 from collections.abc import Sequence
 from functools import cmp_to_key
 from math import prod
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Packet: TypeAlias = list[int | "Packet"]
-Pair: TypeAlias = tuple[Packet, Packet]
+type Packet = list[int | "Packet"]
+type Pair = tuple[Packet, Packet]
 
 
 class PacketParser:

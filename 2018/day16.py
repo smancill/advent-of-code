@@ -4,16 +4,16 @@ import re
 from collections import defaultdict
 from collections.abc import Callable, Iterator, Sequence
 from itertools import count
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Registers: TypeAlias = list[int]
-Instruction: TypeAlias = tuple[int, int, int, int]
-Sample: TypeAlias = tuple[Instruction, Registers, Registers]
+type Registers = list[int]
+type Instruction = tuple[int, int, int, int]
+type Sample = tuple[Instruction, Registers, Registers]
 
-OpCodeFn: TypeAlias = Callable[[Registers, int, int, int], None]
+type OpCodeFn = Callable[[Registers, int, int, int], None]
 
-OpCodesCandidates: TypeAlias = dict[int, set[str]]
-OpCodes: TypeAlias = dict[int, str]
+type OpCodesCandidates = dict[int, set[str]]
+type OpCodes = dict[int, str]
 
 
 def _wrap(op: Callable[[Registers, int, int], int]) -> OpCodeFn:

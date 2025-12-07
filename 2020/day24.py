@@ -4,10 +4,10 @@ import functools
 import re
 from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-HexCoord: TypeAlias = tuple[int, int, int]
-Steps: TypeAlias = list[str]
+type HexCoord = tuple[int, int, int]
+type Steps = list[str]
 
 # https://www.redblobgames.com/grids/hexagons/#neighbors-cube
 direction: Final[Mapping[str, HexCoord]] = {
@@ -32,7 +32,7 @@ def _move(coord: HexCoord, delta: HexCoord) -> HexCoord:
 
 
 def _create_tiles(data: Sequence[Steps]) -> dict[HexCoord, int]:
-    tiles: dict[HexCoord, int] = defaultdict(int)
+    tiles = defaultdict[HexCoord, int](int)
     for path in data:
         deltas = (direction[p] for p in path)
         coord = functools.reduce(_move, deltas, (0, 0, 0))

@@ -14,7 +14,7 @@ def parse_data(f: TextIO) -> tuple[int, int]:
 
 def marble_mania(players: int, marbles: int) -> tuple[int, int]:
     circle = deque([0])
-    score: dict[int, int] = defaultdict(int)
+    score = defaultdict[int, int](int)
 
     plays = zip(cycle(range(1, players + 1)), range(1, marbles + 1))
     for player, marble in plays:

@@ -2,9 +2,9 @@
 
 from collections.abc import Sequence
 from itertools import islice
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Calories: TypeAlias = list[int]
+type Calories = list[int]
 
 
 def parse_data(f: TextIO) -> list[Calories]:

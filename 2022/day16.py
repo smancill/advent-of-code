@@ -6,10 +6,10 @@ import sys
 from collections import deque
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Name: TypeAlias = str
-Path: TypeAlias = list[Name]
+type Name = str
+type Path = list[Name]
 
 
 @dataclass(frozen=True)

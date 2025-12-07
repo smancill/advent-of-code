@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from collections.abc import Mapping
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Notes: TypeAlias = Mapping[str, str]
+type Notes = Mapping[str, str]
 
 NO_PLANT: Final = "."
 PLANT: Final = "#"

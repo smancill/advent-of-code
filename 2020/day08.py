@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from collections.abc import Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Instruction: TypeAlias = tuple[str, int]
+type Instruction = tuple[str, int]
 
 
 def parse_data(f: TextIO) -> list[Instruction]:

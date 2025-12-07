@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Order: TypeAlias = Mapping[str, int]
-Operator: TypeAlias = Callable[[int, int], int]
+type Order = Mapping[str, int]
+type Operator = Callable[[int, int], int]
 
 
 operator_order_1: Final[Order] = {"(": 30, "*": 20, "+": 20}

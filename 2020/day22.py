@@ -3,10 +3,10 @@
 import logging
 import logging.config
 from itertools import count
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Deck: TypeAlias = list[int]
-Winner: TypeAlias = tuple[int, Deck]
+type Deck = list[int]
+type Winner = tuple[int, Deck]
 
 
 def parse_data(f: TextIO) -> tuple[Deck, Deck]:

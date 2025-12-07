@@ -2,10 +2,10 @@
 
 from collections.abc import Sequence, Set
 from functools import reduce
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Answers: TypeAlias = Set[str]
-Group: TypeAlias = Sequence[Answers]
+type Answers = Set[str]
+type Group = Sequence[Answers]
 
 
 def parse_data(f: TextIO) -> list[Group]:

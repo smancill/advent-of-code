@@ -2,11 +2,11 @@
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Final, Self, TextIO, TypeAlias
+from typing import Final, Self, TextIO
 
-Column: TypeAlias = tuple[int, int]
-Rotation: TypeAlias = tuple[Column, Column]
-Instruction: TypeAlias = tuple[str, int]
+type Column = tuple[int, int]
+type Rotation = tuple[Column, Column]
+type Instruction = tuple[str, int]
 
 
 rotation: Final[Mapping[int, Rotation]] = {

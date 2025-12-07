@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from collections.abc import Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Rule: TypeAlias = str | list[list[int]]
-Rules: TypeAlias = dict[int, Rule]
+type Rule = str | list[list[int]]
+type Rules = dict[int, Rule]
 
 
 def parse_data(f: TextIO) -> tuple[Rules, list[str]]:

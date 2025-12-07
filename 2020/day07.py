@@ -2,10 +2,10 @@
 
 import re
 from collections.abc import Mapping, Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Quantity: TypeAlias = tuple[int, str]
-Rules: TypeAlias = Mapping[str, Sequence[Quantity]]
+type Quantity = tuple[int, str]
+type Rules = Mapping[str, Sequence[Quantity]]
 
 BAG: Final = "shiny gold"
 

@@ -4,11 +4,11 @@ from collections import Counter
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from itertools import chain
-from typing import Self, TextIO, TypeAlias
+from typing import Self, TextIO
 
-Coord: TypeAlias = tuple[int, int]
-Nearest: TypeAlias = Mapping[Coord, Coord]
-TotalDist: TypeAlias = Mapping[Coord, int]
+type Coord = tuple[int, int]
+type Nearest = Mapping[Coord, Coord]
+type TotalDist = Mapping[Coord, int]
 
 
 def parse_data(f: TextIO) -> list[Coord]:

@@ -2,9 +2,9 @@
 
 from collections import defaultdict
 from collections.abc import Mapping, Set
-from typing import Final, NamedTuple, TextIO, TypeAlias
+from typing import Final, NamedTuple, TextIO
 
-Coord: TypeAlias = tuple[int, int]
+type Coord = tuple[int, int]
 
 
 def parse_data(f: TextIO) -> str:

@@ -2,11 +2,11 @@
 
 import re
 from collections.abc import Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Ingredients: TypeAlias = set[str]
-Allergens: TypeAlias = set[str]
-Food: TypeAlias = tuple[Ingredients, Allergens]
+type Ingredients = set[str]
+type Allergens = set[str]
+type Food = tuple[Ingredients, Allergens]
 
 
 def parse_data(f: TextIO) -> list[Food]:

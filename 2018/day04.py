@@ -2,9 +2,9 @@
 
 import re
 from collections import defaultdict
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-GuardSleep: TypeAlias = dict[int, list[int]]
+type GuardSleep = dict[int, list[int]]
 
 
 def parse_data(f: TextIO) -> GuardSleep:
@@ -17,7 +17,7 @@ def parse_data(f: TextIO) -> GuardSleep:
         for i in range(begin, end):
             guards[guard][i] += 1
 
-    guards: GuardSleep = defaultdict(lambda: [0] * 60)
+    guards = defaultdict[int, list[int]](lambda: [0] * 60)
     for record in sorted(f):
         if match := pattern.search(record):
             log = match.group("log")

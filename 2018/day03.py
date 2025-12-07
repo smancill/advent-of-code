@@ -4,10 +4,10 @@ import re
 from collections import Counter
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Point: TypeAlias = tuple[int, int]
-Fabric: TypeAlias = Mapping[Point, int]
+type Point = tuple[int, int]
+type Fabric = Mapping[Point, int]
 
 
 @dataclass(frozen=True)

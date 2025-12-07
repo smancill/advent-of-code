@@ -2,10 +2,10 @@
 
 import re
 from collections.abc import Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Field: TypeAlias = tuple[str, str]
-Passport: TypeAlias = Sequence[Field]
+type Field = tuple[str, str]
+type Passport = Sequence[Field]
 
 
 def parse_data(f: TextIO) -> list[Passport]:

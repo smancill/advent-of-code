@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 from collections.abc import Callable, Sequence
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
 N: Final = 6
 
-Registers: TypeAlias = list[int]
-Instruction: TypeAlias = tuple[str, int, int, int]
+type Registers = list[int]
+type Instruction = tuple[str, int, int, int]
 
-OpCodeFn: TypeAlias = Callable[[Registers, int, int, int], None]
+type OpCodeFn = Callable[[Registers, int, int, int], None]
 
 
 def _wrap(op: Callable[[Registers, int, int], int]) -> OpCodeFn:

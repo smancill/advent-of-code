@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from collections.abc import Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Coord: TypeAlias = tuple[int, int, int]
+type Coord = tuple[int, int, int]
 
 
 def parse_data(f: TextIO) -> list[int]:

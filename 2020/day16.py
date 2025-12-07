@@ -3,11 +3,11 @@
 import math
 import re
 from collections.abc import Mapping, Sequence
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Range: TypeAlias = tuple[int, int]
-Fields: TypeAlias = Mapping[str, Sequence[Range]]
-Ticket: TypeAlias = Sequence[int]
+type Range = tuple[int, int]
+type Fields = Mapping[str, Sequence[Range]]
+type Ticket = Sequence[int]
 
 
 def parse_data(f: TextIO) -> tuple[Fields, Ticket, list[Ticket]]:

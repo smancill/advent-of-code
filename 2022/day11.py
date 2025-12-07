@@ -4,9 +4,9 @@ import math
 import operator
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, replace
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-WorryLevelFn: TypeAlias = Callable[[int, int], int]
+type WorryLevelFn = Callable[[int, int], int]
 
 operators: Final[Mapping[str, WorryLevelFn]] = {
     "+": operator.add,

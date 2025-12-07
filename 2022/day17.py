@@ -3,12 +3,11 @@
 import itertools
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from typing import Final, NewType, Self, TextIO, TypeAlias, TypeVar
+from typing import Final, NewType, Self, TextIO
 
 JetPattern = NewType("JetPattern", str)
 
-T = TypeVar("T")
-Enumeration: TypeAlias = Iterator[tuple[int, T]]
+type Enumeration[T] = Iterator[tuple[int, T]]
 
 
 ROCK: Final = "#"

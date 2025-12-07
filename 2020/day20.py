@@ -5,7 +5,7 @@ from collections import defaultdict
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Final, Generic, TextIO, TypeVar
+from typing import Any, Final, TextIO
 
 MONSTER: Final = [
     "                  # ",
@@ -21,10 +21,7 @@ class Side(Enum):
     RIGHT = 3
 
 
-T = TypeVar("T")
-
-
-class Container(Generic[T]):
+class Container[T]:
     _data: list[list[T]]
     _height: int
     _width: int
@@ -66,10 +63,7 @@ class Container(Generic[T]):
         return "\n".join("".join(str(elem) for elem in row) for row in self._data)
 
 
-C = TypeVar("C", bound=Container[Any])
-
-
-def orientate_until(cont: C, pred: Callable[[C], bool]) -> None:
+def orientate_until[C: Container[Any]](cont: C, pred: Callable[[C], bool]) -> None:
     """
     Rotate and flip until the predicate is True.
 
@@ -190,7 +184,7 @@ class ImageAssembler:
 
     @staticmethod
     def _map_adj(tiles: Mapping[int, Tile]) -> dict[str, set[Tile]]:
-        adj: dict[str, set[Tile]] = defaultdict(set)
+        adj = defaultdict[str, set[Tile]](set)
         for t in tiles.values():
             for s in Side:
                 b = t.border(s)

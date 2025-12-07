@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 from collections.abc import Sequence
-from typing import Final, NamedTuple, TextIO, TypeAlias
+from typing import Final, NamedTuple, TextIO
 
 N: Final = 300
 
-Coord: TypeAlias = tuple[int, int]
-Grid: TypeAlias = Sequence[Sequence[int]]
+type Coord = tuple[int, int]
+type Grid = Sequence[Sequence[int]]
 
 
 class MaxPower(NamedTuple):

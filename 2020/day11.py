@@ -5,9 +5,9 @@ import logging.config
 from collections.abc import Callable, Iterator
 from enum import Enum, StrEnum
 from itertools import count, islice, product
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Layout: TypeAlias = list[list[str]]
+type Layout = list[list[str]]
 
 
 def read_data(f: TextIO) -> Layout:

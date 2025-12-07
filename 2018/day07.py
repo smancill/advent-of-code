@@ -3,9 +3,9 @@
 from collections import defaultdict
 from collections.abc import Sequence
 from string import ascii_uppercase
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Graph: TypeAlias = dict[str, set[str]]
+type Graph = dict[str, set[str]]
 
 
 def read_data(f: TextIO) -> list[str]:

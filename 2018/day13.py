@@ -3,10 +3,10 @@
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Final, TextIO, TypeAlias
+from typing import Final, TextIO
 
-Coord: TypeAlias = tuple[int, int]
-Tracks: TypeAlias = Mapping[Coord, str]
+type Coord = tuple[int, int]
+type Tracks = Mapping[Coord, str]
 
 
 cart_to_track: Final[Mapping[str, str]] = {

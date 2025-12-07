@@ -3,9 +3,9 @@
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TextIO, TypeAlias
+from typing import TextIO
 
-Coord: TypeAlias = tuple[int, int, int]
+type Coord = tuple[int, int, int]
 
 
 @dataclass(frozen=True)
