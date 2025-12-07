@@ -1,0 +1,25 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day11 import is_valid, new_password
+
+Part 1:
+
+    >>> is_valid("hijklmmn")
+    False
+
+    >>> is_valid("abbceffg")
+    False
+
+    >>> is_valid("abbcegjk")
+    False
+
+    >>> new_password("abcdefgh")
+    'abcdffaa'
+
+    >>> new_password("ghijklmn")
+    'ghjaabcc'
+
+Part 2:
+
+    No examples.
