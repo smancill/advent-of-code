@@ -1,0 +1,28 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day07 import parse_data, Circuit
+
+    >>> data = parse_data(StringIO("""\
+    ... 123 -> x
+    ... 456 -> y
+    ... x AND y -> d
+    ... x OR y -> e
+    ... x LSHIFT 2 -> f
+    ... y RSHIFT 2 -> g
+    ... NOT x -> h
+    ... NOT y -> i
+    ... """))
+
+    >>> circuit = Circuit(data)
+    >>> wires = sorted(circuit)
+    >>> for w in wires:
+    ...     print(f"{w}: {circuit[w]}")
+    d: 72
+    e: 507
+    f: 492
+    g: 114
+    h: 65412
+    i: 65079
+    x: 123
+    y: 456
