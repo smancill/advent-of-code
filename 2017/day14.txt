@@ -1,0 +1,29 @@
+Setup:
+
+    >>> from day14 import parse_data, get_regions, part1, part2
+    >>> from io import StringIO
+
+    >>> grid = parse_data(StringIO("flqrgnkx\n"))
+
+    >>> for i in range(8):
+    ...    for j in range(8):
+    ...        print(f"{'#' if grid[i][j] else '.'}", end="")
+    ...    print()
+    ##.#.#..
+    .#.#.#.#
+    ....#.#.
+    #.#.##.#
+    .##.#...
+    ##..#..#
+    .#...#..
+    ##.#.##.
+
+Part 1:
+
+    >>> part1(grid)
+    8108
+
+Part 2:
+
+    >>> part2(grid)
+    1242
