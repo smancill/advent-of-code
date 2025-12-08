@@ -1,0 +1,11 @@
+Setup:
+
+    >>> from day16 import parse_data, part1
+    >>> from io import StringIO
+
+    >>> data = parse_data(StringIO("s1,x3/4,pe/b\n"))
+
+Part 1:
+
+    >>> part1("abcde", data)
+    'baedc'
