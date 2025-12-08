@@ -1,0 +1,46 @@
+Setup:
+
+    >>> from day15 import parse_data, Start, gen_a, gen_b, part1, part2
+    >>> from itertools import islice
+
+Part 1:
+
+    >>> for i in islice(gen_a(65, False), 0, 5):
+    ...     print(f"{i:10d}")
+       1092455
+    1181022009
+     245556042
+    1744312007
+    1352636452
+
+    >>> for i in islice(gen_b(8921, False), 0, 5):
+    ...     print(f"{i:10d}")
+     430625591
+    1233683848
+    1431495498
+     137874439
+     285222916
+
+    >>> part1(Start(65, 8921))
+    588
+
+Part 2:
+
+    >>> for i in islice(gen_a(65, True), 0, 5):
+    ...     print(f"{i:10d}")
+    1352636452
+    1992081072
+     530830436
+    1980017072
+     740335192
+
+    >>> for i in islice(gen_b(8921, True), 0, 5):
+    ...     print(f"{i:10d}")
+    1233683848
+     862516352
+    1159784568
+    1616057672
+     412269392
+
+    >>> part2(Start(65, 8921))
+    309
