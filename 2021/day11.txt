@@ -1,0 +1,27 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day11 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 5483143223
+    ... 2745854711
+    ... 5264556173
+    ... 6141336146
+    ... 6357385478
+    ... 4167524645
+    ... 2176841721
+    ... 6882881134
+    ... 4846848554
+    ... 5283751526
+    ... """))
+
+Part 1:
+
+    >>> part1(data.copy())
+    1656
+
+Part 2:
+
+    >>> part2(data.copy())
+    195

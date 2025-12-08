@@ -1,0 +1,18 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day06 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 3,4,3,1,2
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    5934
+
+Part 2:
+
+    >>> part2(data)
+    26984457539

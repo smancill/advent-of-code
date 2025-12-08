@@ -1,0 +1,34 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day09 import find_basin, parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 2199943210
+    ... 3987894921
+    ... 9856789892
+    ... 8767896789
+    ... 9899965678
+    ... """))
+
+    >>> sorted(find_basin(data, (0, 1)), key=lambda p: (p[1], p[0]))
+    [(0, 0), (1, 0), (0, 1)]
+
+    >>> sorted(find_basin(data, (9, 1)), key=lambda p: (p[1], p[0]))
+    [(5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (6, 1), (8, 1), (9, 1), (9, 2)]
+
+    >>> sorted(find_basin(data, (6, 4)), key=lambda p: (p[1], p[0]))
+    [(7, 2), (6, 3), (7, 3), (8, 3), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4)]
+
+    >>> sorted(find_basin(data, (2, 2)), key=lambda p: (p[1], p[0]))
+    [(2, 1), (3, 1), (4, 1), (1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (0, 3), (1, 3), (2, 3), (3, 3), (4, 3), (1, 4)]
+
+Part 1:
+
+    >>> part1(data)
+    15
+
+Part 2:
+
+    >>> part2(data)
+    1134

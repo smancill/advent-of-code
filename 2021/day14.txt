@@ -1,0 +1,35 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day14 import parse_data, part1, part2
+
+    >>> template, rules = parse_data(StringIO("""\
+    ... NNCB
+    ... 
+    ... CH -> B
+    ... HH -> N
+    ... CB -> H
+    ... NH -> C
+    ... HB -> C
+    ... HC -> B
+    ... HN -> C
+    ... NN -> C
+    ... BH -> H
+    ... NC -> B
+    ... NB -> B
+    ... BN -> B
+    ... BB -> N
+    ... BC -> B
+    ... CC -> N
+    ... CN -> C
+    ... """))
+
+Part 1:
+
+    >>> part1(template, rules)
+    1588
+
+Part 2:
+
+    >>> part2(template, rules)
+    2188189693529
