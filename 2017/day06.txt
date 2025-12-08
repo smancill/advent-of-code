@@ -1,0 +1,8 @@
+Setup:
+
+    >>> from day06 import reallocate
+
+Problem:
+
+    >>> reallocate([0, 2, 7, 0])
+    RepeatedConfig(banks=[2, 4, 1, 2], cycle=5, loop_size=4)
