@@ -38,7 +38,7 @@ get_default_day() {
     local day
     local year=$1
     if [[ $(date +%Y-%m) == "${year}-12" ]]; then
-        day=$(date +%d)
+        day=$(date +%d | sed 's/^0//')
         if [[ ${day} -le 25 ]]; then
             normalize_day "${day}"
         fi
