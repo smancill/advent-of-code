@@ -1,0 +1,23 @@
+Setup:
+
+    >>> from day08 import parse_data, execute
+    >>> from io import StringIO
+
+    >>> data = parse_data(StringIO("""\
+    ... b inc 5 if a > 1
+    ... a inc 1 if b < 5
+    ... c dec -10 if a >= 1
+    ... c inc -20 if c == 10
+    ... """))
+
+Part 1:
+
+    >>> m, _ = execute(data)
+    >>> m
+    1
+
+Part 2:
+
+    >>> _, m = execute(data)
+    >>> m
+    10
