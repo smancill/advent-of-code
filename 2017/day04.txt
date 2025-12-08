@@ -1,0 +1,25 @@
+Setup:
+
+    >>> from day04 import no_duplicates, no_anagrams
+
+Part 1:
+
+    >>> no_duplicates("aa bb cc dd ee")
+    True
+    >>> no_duplicates("aa bb cc dd aa")
+    False
+    >>> no_duplicates("aa bb cc dd aaa")
+    True
+
+Part 2:
+
+    >>> no_anagrams("abcde fghij")
+    True
+    >>> no_anagrams("abcde xyz ecdab")
+    False
+    >>> no_anagrams("a ab abc abd abf abj")
+    True
+    >>> no_anagrams("iiii oiii ooii oooi oooo")
+    True
+    >>> no_anagrams("oiii ioii iioi iiio")
+    False
