@@ -1,0 +1,19 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day15 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+    ... Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    62842880
+
+Part 2:
+
+    >>> part2(data)
+    57600000

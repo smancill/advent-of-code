@@ -1,0 +1,29 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day05 import parse_data, part1, part2
+
+Part 1:
+
+    >>> data = parse_data(StringIO("""\
+    ... ugknbfddgicrmopn
+    ... aaa
+    ... jchzalrnumimnmhp
+    ... haegwjzuvuyypxyu
+    ... dvszwmarrgswjxmb
+    ... """))
+
+    >>> part1(data)
+    2
+
+Part 2:
+
+    >>> data = parse_data(StringIO("""\
+    ... qjhvhtzxzqqjkmpb
+    ... xxyxx
+    ... uurcxstgmygtbstg
+    ... ieodomkazucvgmuy
+    ... """))
+
+    >>> part2(data)
+    2

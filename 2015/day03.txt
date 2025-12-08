@@ -1,0 +1,21 @@
+Setup:
+
+    >>> from day03 import part1, part2
+
+Part 1:
+
+    >>> part1(">")
+    2
+    >>> part1("^>v<")
+    4
+    >>> part1("^v^v^v^v^v")
+    2
+
+Part 2:
+
+    >>> part2("^>")
+    3
+    >>> part2("^>v<")
+    3
+    >>> part2("^v^v^v^v^v")
+    11

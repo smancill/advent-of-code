@@ -1,0 +1,21 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day08 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... ""
+    ... "abc"
+    ... "aaa\\"aaa"
+    ... "\\x27"
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    12
+
+Part 2:
+
+    >>> part2(data)
+    19

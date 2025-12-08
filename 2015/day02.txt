@@ -1,0 +1,19 @@
+Setup:
+
+    >>> from io import StringIO
+    >>> from day02 import parse_data, part1, part2
+
+    >>> data = parse_data(StringIO("""\
+    ... 2x3x4
+    ... 1x1x10
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    101
+
+Part 2:
+
+    >>> part2(data)
+    48

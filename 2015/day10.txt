@@ -1,0 +1,13 @@
+Setup:
+
+    >>> from day10 import look_and_say
+
+Part 1:
+
+    >>> look_and_say("1", iterations=5)
+    '312211'
+
+Part 2:
+
+    No example.
+
