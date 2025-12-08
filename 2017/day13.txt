@@ -1,0 +1,21 @@
+Setup:
+
+    >>> from day13 import parse_data, part1, part2
+    >>> from io import StringIO
+
+    >>> data = parse_data(StringIO("""\
+    ... 0: 3
+    ... 1: 2
+    ... 4: 4
+    ... 6: 4
+    ... """))
+
+Part 1:
+
+    >>> part1(data)
+    24
+
+Part 2:
+
+    >>> part2(data)
+    10

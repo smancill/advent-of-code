@@ -1,0 +1,24 @@
+Setup:
+
+    >>> from day12 import parse_data, find_group, find_groups
+    >>> from io import StringIO
+
+    >>> data = parse_data(StringIO("""\
+    ... 0 <-> 2
+    ... 1 <-> 1
+    ... 2 <-> 0, 3, 4
+    ... 3 <-> 2, 4
+    ... 4 <-> 2, 3, 6
+    ... 5 <-> 6
+    ... 6 <-> 4, 5
+    ... """))
+
+Part 1:
+
+    >>> sorted(find_group(data, 0))
+    [0, 2, 3, 4, 5, 6]
+
+Part 2:
+
+    >>> sorted(map(sorted, find_groups(data)))
+    [[0, 2, 3, 4, 5, 6], [1]]
